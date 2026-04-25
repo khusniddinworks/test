@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="uz" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safo Marva Tour - Umra Ziyorati 2026</title>
+    <link rel="stylesheet" href="./src/input.css">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <meta name="description"
+        content="Safo Marva Tour - O'zbekistondagi ishonchli Umra va Haj sayohat agentligi. 2026-yilgi iyun va iyul oylari uchun maxsus paketlar va qulay ziyorat imkoniyatlari.">
+    <meta name="keywords"
+        content="Umra 2026, Safo Marva, Haj, Saudiya Arabistoni sayohat, Toshkent Umra, Iyun Umra, Arzon Umra">
+    <meta property="og:title" content="Safo Marva Tour - Umra Ziyorati 2026">
+    <meta property="og:description"
+        content="Muborak safarga biz bilan birga boring. Xavfsiz, litsenziyalangan va xotirjam ziyorat.">
+    <meta property="og:image" content="safo_marva.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" href="safo_marva.png">
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .gold-text {
+            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Infinite Marquee */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .marquee-container {
+            display: flex;
+            width: fit-content;
+            animation: marquee 40s linear infinite;
+        }
+
+        .marquee-container:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-900" x-data="{ activeModal: null, scrolled: false, mobileMenu: false }"
+    @scroll.window="scrolled = (window.pageYOffset > 50)">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 py-4 transition-all duration-300"
+        :class="scrolled ? 'bg-brand-red shadow-xl py-2' : 'glass py-4'">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="safo_marva.png" alt="Safo Marva Logo" class="h-12 w-auto mr-3 rounded-lg shadow-lg">
+                <span class="text-white font-bold text-xl tracking-wider hidden md:block uppercase">SAFO MARVA
+                    TOUR</span>
+            </div>
+
+            <!-- Desktop Menu Links -->
+            <div class="hidden lg:flex items-center space-x-8">
+                <a href="#packages"
+                    class="text-white hover:text-brand-gold transition-colors text-sm font-medium uppercase tracking-widest">Paketlar</a>
+                <a href="#why-choose"
+                    class="text-white hover:text-brand-gold transition-colors text-sm font-medium uppercase tracking-widest">Nega
+                    biz?</a>
+                <a href="#gallery"
+                    class="text-white hover:text-brand-gold transition-colors text-sm font-medium uppercase tracking-widest">Galereya</a>
+            </div>
+
+            <div class="flex items-center space-x-4 md:space-x-6">
+                <div class="hidden sm:flex flex-col text-right">
+                    <a href="tel:+998555177373"
+                        class="text-white hover:text-brand-gold transition-colors font-bold text-sm">+998 55 517 73
+                        73</a>
+                    <a href="tel:+998946257772"
+                        class="text-gray-300 hover:text-brand-gold transition-colors text-xs">+998 94 625 77 72</a>
+                </div>
+                <a href="https://t.me/safomarvatour"
+                    class="hidden md:block bg-brand-gold hover:bg-yellow-600 text-brand-red px-6 py-2 rounded-full font-bold transition-transform hover:scale-105">BOG'LANISH</a>
+
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenu = !mobileMenu" class="lg:hidden text-white p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div x-show="mobileMenu" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-4"
+            class="lg:hidden bg-brand-red border-t border-red-800 absolute top-full left-0 w-full shadow-2xl py-6 px-6 space-y-4 text-center">
+            <a @click="mobileMenu = false" href="#packages" class="block text-white text-lg font-medium">Paketlar</a>
+            <a @click="mobileMenu = false" href="#why-choose" class="block text-white text-lg font-medium">Nega biz?</a>
+            <a @click="mobileMenu = false" href="#gallery" class="block text-white text-lg font-medium">Galereya</a>
+            <div class="pt-4 border-t border-red-800">
+                <a href="tel:+998555177373" class="block text-brand-gold font-bold mb-2">+998 55 517 73 73</a>
+                <a href="https://t.me/safomarvatour"
+                    class="inline-block bg-brand-gold text-brand-red px-8 py-3 rounded-full font-bold mt-2">BOG'LANISH</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient h-screen flex items-center justify-center text-center text-white px-6">
+        <div class="max-w-4xl">
+            <h2 class="text-brand-gold font-semibold tracking-[0.3em] mb-4 uppercase">Muborak Safarga Taklif Etamiz</h2>
+            <h1 class="text-5xl md:text-7xl font-serif mb-8 leading-tight">Yangi Mavsum — <span
+                    class="gold-text">Iyun-Iyul</span> Oylaridan!</h1>
+            <p class="text-xl md:text-2xl mb-10 text-gray-200">SAFO MARVA TOUR bilan — litsenziyalangan, xavfsiz va
+                xotirjam ziyorat!</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#packages"
+                    class="bg-white text-brand-red px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all shadow-lg">PAKETLARNI
+                    TANLASH</a>
+                <a href="tel:+998555177373"
+                    class="border-2 border-white text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-brand-red transition-all">BEPUL
+                    KONSULTATSIYA</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="packages" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-serif text-brand-red mb-4">Umra Paketlarimiz</h2>
+                <div class="w-24 h-1 bg-brand-gold mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">Siz va yaqinlaringiz uchun iyun oyi uchun maxsus ishlab
+                    chiqilgan, barcha qulayliklarga ega takliflar.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 reveal">
+
+                <!-- Standard Card -->
+                <div
+                    class="bg-white rounded-2xl border border-gray-100 p-6 shadow-lg hover:shadow-2xl transition-all flex flex-col">
+                    <span class="text-brand-red font-bold text-xs tracking-widest uppercase mb-2">10 KECHALIK</span>
+                    <h3 class="text-xl font-bold mb-4 uppercase">Standart Paket</h3>
+                    <p class="text-gray-500 text-sm mb-6">Sifatli va hamyonbop tanlov.</p>
+                    <div class="text-3xl font-bold text-brand-gold mb-6">$1150 <span
+                            class="text-sm text-gray-400 font-normal">/ dan</span></div>
+                    <div class="mt-auto space-y-3">
+                        <button @click="activeModal = 'standard'"
+                            class="w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors">Batafsil
+                            ma'lumot</button>
+                        <a href="https://t.me/safomarvatour"
+                            class="block w-full bg-brand-red text-white py-3 rounded-xl font-bold text-center hover:bg-red-800 shadow-md">Band
+                            qilish</a>
+                    </div>
+                </div>
+
+                <!-- Comfort Card -->
+                <div
+                    class="bg-white rounded-2xl border-2 border-brand-gold p-6 shadow-2xl transition-all flex flex-col relative scale-105 z-10">
+                    <div
+                        class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-gold text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                        Ommabop</div>
+                    <span class="text-brand-red font-bold text-xs tracking-widest uppercase mb-2">10 KECHALIK</span>
+                    <h3 class="text-xl font-bold mb-4 uppercase">Komfort Paket</h3>
+                    <p class="text-gray-500 text-sm mb-6">Qulay mehmonxona va yuqori darajadagi xizmat.</p>
+                    <div class="text-3xl font-bold text-brand-gold mb-6">$1300 <span
+                            class="text-sm text-gray-400 font-normal">/ dan</span></div>
+                    <div class="mt-auto space-y-3">
+                        <button @click="activeModal = 'comfort'"
+                            class="w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors">Batafsil
+                            ma'lumot</button>
+                        <a href="https://t.me/safomarvatour"
+                            class="block w-full bg-brand-red text-white py-3 rounded-xl font-bold text-center hover:bg-red-800 shadow-md">Band
+                            qilish</a>
+                    </div>
+                </div>
+
+                <!-- LUX Card -->
+                <div
+                    class="bg-white rounded-2xl border border-gray-100 p-6 shadow-lg hover:shadow-2xl transition-all flex flex-col">
+                    <span class="text-brand-red font-bold text-xs tracking-widest uppercase mb-2">10 KECHALIK</span>
+                    <h3 class="text-xl font-bold mb-4 uppercase">LUX Paket</h3>
+                    <p class="text-gray-500 text-sm mb-6">Haramga yaqin va premium mehmonxonalar.</p>
+                    <div class="text-3xl font-bold text-brand-gold mb-6">$1550 <span
+                            class="text-sm text-gray-400 font-normal">/ dan</span></div>
+                    <div class="mt-auto space-y-3">
+                        <button @click="activeModal = 'lux'"
+                            class="w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors">Batafsil
+                            ma'lumot</button>
+                        <a href="https://t.me/safomarvatour"
+                            class="block w-full bg-brand-red text-white py-3 rounded-xl font-bold text-center hover:bg-red-800 shadow-md">Band
+                            qilish</a>
+                    </div>
+                </div>
+
+                <!-- LUX Premium Card -->
+                <div
+                    class="bg-brand-dark rounded-2xl border border-gray-800 p-6 shadow-lg hover:shadow-2xl transition-all flex flex-col text-white">
+                    <span class="text-brand-gold font-bold text-xs tracking-widest uppercase mb-2">PREMIUM</span>
+                    <h3 class="text-xl font-bold mb-4 uppercase">LUX Premium</h3>
+                    <p class="text-gray-400 text-sm mb-6">Eng yuqori darajadagi qulaylik va ibodat muhiti.</p>
+                    <div class="text-3xl font-bold text-brand-gold mb-6">$1650 <span
+                            class="text-sm text-gray-500 font-normal">/ dan</span></div>
+                    <div class="mt-auto space-y-3">
+                        <button @click="activeModal = 'lux_premium'"
+                            class="w-full bg-gray-800 text-white py-3 rounded-xl font-semibold hover:bg-gray-700 transition-colors border border-gray-700">Batafsil
+                            ma'lumot</button>
+                        <a href="https://t.me/safomarvatour"
+                            class="block w-full bg-brand-gold text-brand-red py-3 rounded-xl font-bold text-center hover:bg-yellow-600 shadow-md">Band
+                            qilish</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 14-Day Special Section -->
+    <section class="py-24 bg-gray-100 reveal">
+        <div class="container mx-auto px-6">
+            <div class="bg-brand-red rounded-[2.5rem] shadow-3xl overflow-hidden flex flex-col lg:flex-row">
+                <div class="lg:w-5/12 p-12 lg:p-16 text-white flex flex-col justify-center">
+                    <h2 class="text-brand-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm">Eksklyuziv Taklif</h2>
+                    <h3 class="text-4xl md:text-5xl font-serif mb-8 leading-tight">14 Kunlik "Al Ebaa" Komfort Paketi
+                    </h3>
+                    <p class="text-red-100 text-lg mb-10 leading-relaxed">Iyun va Iyul oylari uchun maxsus. Toshkentdan
+                        to'g'ridan-to'g'ri reyslar va barcha qulayliklar mujassam.</p>
+
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="bg-red-900/50 p-4 rounded-2xl border border-red-800">
+                            <p class="text-xs text-red-200 uppercase mb-1">Makkada</p>
+                            <p class="font-bold">7 KECHA</p>
+                        </div>
+                        <div class="bg-red-900/50 p-4 rounded-2xl border border-red-800">
+                            <p class="text-xs text-red-200 uppercase mb-1">Madinada</p>
+                            <p class="font-bold">7 KECHA</p>
+                        </div>
+                    </div>
+
+                    <button @click="activeModal = '14day'"
+                        class="bg-white text-brand-red py-4 rounded-2xl font-bold text-lg hover:bg-brand-gold hover:text-white transition-all shadow-xl">Barchasini
+                        bilish</button>
+                </div>
+                <div class="lg:w-7/12 bg-white p-12 lg:p-16">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <h4 class="text-2xl font-serif text-brand-red border-b pb-4">Xizmatlarimiz</h4>
+                            <ul class="space-y-4 text-gray-700">
+                                <li class="flex items-center"><span
+                                        class="w-6 h-6 bg-red-100 text-brand-red rounded-full flex items-center justify-center text-xs mr-3 font-bold">✓</span>
+                                    Aviachiptalar (Borish-kelish)</li>
+                                <li class="flex items-center"><span
+                                        class="w-6 h-6 bg-red-100 text-brand-red rounded-full flex items-center justify-center text-xs mr-3 font-bold">✓</span>
+                                    Viza xizmati</li>
+                                <li class="flex items-center"><span
+                                        class="w-6 h-6 bg-red-100 text-brand-red rounded-full flex items-center justify-center text-xs mr-3 font-bold">✓</span>
+                                    Madina-Makka Tezyurar poezd</li>
+                                <li class="flex items-center"><span
+                                        class="w-6 h-6 bg-red-100 text-brand-red rounded-full flex items-center justify-center text-xs mr-3 font-bold">✓</span>
+                                    2 mahal mazali taomlar</li>
+                                <li class="flex items-center"><span
+                                        class="w-6 h-6 bg-red-100 text-brand-red rounded-full flex items-center justify-center text-xs mr-3 font-bold">✓</span>
+                                    Malakali yo'lboshchi va shifokor</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="text-2xl font-serif text-brand-red border-b pb-4">Narxlar</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl">
+                                    <span class="text-gray-600">4 kishilik xona</span>
+                                    <span class="font-bold text-brand-gold text-xl">$1390</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl">
+                                    <span class="text-gray-600">3 kishilik xona</span>
+                                    <span class="font-bold text-brand-gold text-xl">$1490</span>
+                                </div>
+                                <div
+                                    class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border-2 border-brand-gold">
+                                    <span class="text-gray-600">2 kishilik xona</span>
+                                    <span class="font-bold text-brand-gold text-xl">$1650</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <!-- Standard Modal -->
+    <div x-show="activeModal === 'standard'" x-cloak class="fixed inset-0 z-[100] overflow-y-auto"
+        aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div @click="activeModal = null"
+                class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75 backdrop-blur-sm"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div
+                class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-3xl shadow-3xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-brand-red px-8 py-6 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wider">Standart Paket Tafsilotlari</h3>
+                    <button @click="activeModal = null" class="text-white hover:text-brand-gold font-bold">X</button>
+                </div>
+                <div class="px-8 py-8 space-y-6">
+                    <div>
+                        <h4 class="font-bold text-brand-red mb-2 uppercase text-xs tracking-widest">Mehmonxona:</h4>
+                        <p class="text-gray-700 font-semibold">Ramada Zad Al Tayser</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-red mb-2 uppercase text-xs tracking-widest">Transport:</h4>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>• Madinadan Makkaga tezyurar poezd</li>
+                            <li>• Borish-kelish aviachiptalari</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-red mb-2 uppercase text-xs tracking-widest">Xizmatlar:</h4>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>• Umra vizasi</li>
+                            <li>• Malakali ellikboshi (yo'lboshchi)</li>
+                            <li>• Tibbiy sug'urta</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <p class="text-xs text-gray-500 uppercase mb-1">Boshlang'ich Narx:</p>
+                        <p class="text-3xl font-bold text-brand-gold">$1150</p>
+                    </div>
+                    <a href="https://t.me/safomarvatour"
+                        class="block w-full bg-brand-red text-white py-4 rounded-2xl font-bold text-center hover:bg-red-800 shadow-xl transition-all">HOZIR
+                        BAND QILISH</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comfort Modal -->
+    <div x-show="activeModal === 'comfort'" x-cloak class="fixed inset-0 z-[100] overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 sm:p-0">
+            <div @click="activeModal = null" class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm"></div>
+            <div
+                class="inline-block bg-white rounded-3xl shadow-3xl sm:max-w-lg sm:w-full z-10 overflow-hidden transform transition-all">
+                <div class="bg-brand-gold px-8 py-6 flex justify-between items-center text-brand-red">
+                    <h3 class="text-xl font-bold uppercase tracking-wider">Komfort Paket Tafsilotlari</h3>
+                    <button @click="activeModal = null" class="font-bold">X</button>
+                </div>
+                <div class="px-8 py-8 space-y-6">
+                    <div>
+                        <h4 class="font-bold text-brand-red mb-2 uppercase text-xs tracking-widest">Mehmonxona:</h4>
+                        <p class="text-gray-700 font-semibold italic">AL EBAA mehmonxonasi</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-red mb-2 uppercase text-xs tracking-widest">Dasturda:</h4>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>• Madinadan Makkaga tezyurar poezd</li>
+                            <li>• 2 mahal mazali taomlar</li>
+                            <li>• Makka va Madina bo'ylab ekskursiyalar</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-red mb-2 uppercase text-xs tracking-widest">Qulayliklar:</h4>
+                        <p class="text-gray-600">Juma namozlarini Haram masjidlarida ado etish imkoniyati.</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-brand-gold">
+                        <p class="text-xs text-gray-500 uppercase mb-1">Boshlang'ich Narx:</p>
+                        <p class="text-3xl font-bold text-brand-gold">$1300</p>
+                    </div>
+                    <a href="https://t.me/safomarvatour"
+                        class="block w-full bg-brand-red text-white py-4 rounded-2xl font-bold text-center hover:bg-red-800 shadow-xl transition-all">HOZIR
+                        BAND QILISH</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LUX Modal -->
+    <div x-show="activeModal === 'lux'" x-cloak class="fixed inset-0 z-[100] overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 sm:p-0">
+            <div @click="activeModal = null" class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm"></div>
+            <div
+                class="inline-block bg-white rounded-3xl shadow-3xl sm:max-w-lg sm:w-full z-10 overflow-hidden transform transition-all">
+                <div class="bg-brand-red px-8 py-6 flex justify-between items-center text-white">
+                    <h3 class="text-xl font-bold uppercase tracking-wider">LUX Paket Tafsilotlari</h3>
+                    <button @click="activeModal = null" class="font-bold">X</button>
+                </div>
+                <div class="px-8 py-8 space-y-6">
+                    <div>
+                        <h4 class="font-bold text-brand-red mb-2 uppercase text-xs tracking-widest">Mehmonxona:</h4>
+                        <p class="text-gray-700 font-semibold">ANJUM mehmonxonasi</p>
+                        <p class="text-sm text-gray-500">Makkada Haramga juda yaqin masofada.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-red mb-2 uppercase text-xs tracking-widest">Premium Xizmatlar:
+                        </h4>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>• Haramain tezyurar poezdi</li>
+                            <li>• Yuqori sifatli transfer xizmatlari</li>
+                            <li>• Maxsus guruh rahbarlari</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-2xl">
+                        <p class="text-xs text-gray-500 uppercase mb-1">Boshlang'ich Narx:</p>
+                        <p class="text-3xl font-bold text-brand-gold">$1550</p>
+                    </div>
+                    <a href="https://t.me/safomarvatour"
+                        class="block w-full bg-brand-red text-white py-4 rounded-2xl font-bold text-center hover:bg-red-800 shadow-xl transition-all">HOZIR
+                        BAND QILISH</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LUX Premium Modal -->
+    <div x-show="activeModal === 'lux_premium'" x-cloak class="fixed inset-0 z-[100] overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 sm:p-0">
+            <div @click="activeModal = null" class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm"></div>
+            <div
+                class="inline-block bg-brand-dark rounded-3xl shadow-3xl sm:max-w-lg sm:w-full z-10 overflow-hidden border border-gray-700 transform transition-all">
+                <div class="bg-brand-gold px-8 py-6 flex justify-between items-center text-brand-red">
+                    <h3 class="text-xl font-bold uppercase tracking-wider">LUX Premium Tafsilotlari</h3>
+                    <button @click="activeModal = null" class="font-bold">X</button>
+                </div>
+                <div class="px-8 py-8 space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-800 p-4 rounded-2xl">
+                            <h4 class="font-bold text-brand-gold mb-1 uppercase text-[10px]">Madina (3 kecha)</h4>
+                            <p class="text-white text-sm">Bosphorus Waqf Al Safi</p>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded-2xl">
+                            <h4 class="font-bold text-brand-gold mb-1 uppercase text-[10px]">Makka (4 kecha)</h4>
+                            <p class="text-white text-sm">Jumeirah Jabal Omar</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-gold mb-2 uppercase text-xs tracking-widest">Imtiyozlar:</h4>
+                        <ul class="text-gray-300 space-y-2 text-sm">
+                            <li class="flex items-start"><span class="text-brand-gold mr-2">✦</span> Haramga eng yaqin
+                                masofadagi 5 yulduzli mehmonxonalar.</li>
+                            <li class="flex items-start"><span class="text-brand-gold mr-2">✦</span> Haramain tezyurar
+                                poyezdida VIP sayohat.</li>
+                            <li class="flex items-start"><span class="text-brand-gold mr-2">✦</span> Shaxsiy xizmat
+                                ko'rsatish va sokinlik.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-2xl border border-gray-700">
+                        <p class="text-xs text-gray-500 uppercase mb-1">Paket Narxi:</p>
+                        <p class="text-3xl font-bold text-brand-gold">$1650</p>
+                    </div>
+                    <a href="https://t.me/safomarvatour"
+                        class="block w-full bg-brand-gold text-brand-red py-4 rounded-2xl font-bold text-center hover:bg-yellow-500 shadow-xl transition-all">PREMIUM
+                        BAND QILISH</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 14-Day Modal -->
+    <div x-show="activeModal === '14day'" x-cloak class="fixed inset-0 z-[100] overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 sm:p-0">
+            <div @click="activeModal = null" class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm"></div>
+            <div
+                class="inline-block bg-white rounded-3xl shadow-3xl sm:max-w-2xl sm:w-full z-10 overflow-hidden transform transition-all">
+                <div class="bg-brand-red px-8 py-6 flex justify-between items-center text-white">
+                    <h3 class="text-xl font-bold uppercase tracking-wider">14 Kunlik Komfort Paket (Batafsil)</h3>
+                    <button @click="activeModal = null" class="font-bold text-2xl">×</button>
+                </div>
+                <div class="px-8 py-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h4 class="font-bold text-brand-red mb-4 uppercase text-xs tracking-widest border-b pb-2">
+                                Mehmonxonalar:</h4>
+                            <p class="text-gray-700"><strong>Madina:</strong> Mehrob Toiba (7 kecha)</p>
+                            <p class="text-gray-700"><strong>Makka:</strong> Al Ebaa Hotel (7 kecha)</p>
+                            <p class="mt-4 text-sm text-gray-500 italic">Har ikki shaharda ham Juma namozini ado etish
+                                imkoniyati mavjud.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-red mb-4 uppercase text-xs tracking-widest border-b pb-2">
+                                Hadialarimiz:</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    class="bg-red-50 text-brand-red px-3 py-1 rounded-full text-xs font-semibold">Zam-Zam
+                                    5L</span>
+                                <span
+                                    class="bg-red-50 text-brand-red px-3 py-1 rounded-full text-xs font-semibold">Nimcha</span>
+                                <span
+                                    class="bg-red-50 text-brand-red px-3 py-1 rounded-full text-xs font-semibold">Sumka</span>
+                                <span
+                                    class="bg-red-50 text-brand-red px-3 py-1 rounded-full text-xs font-semibold">Abaya</span>
+                                <span
+                                    class="bg-red-50 text-brand-red px-3 py-1 rounded-full text-xs font-semibold">Beyjik</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-brand-red mb-4 uppercase text-xs tracking-widest border-b pb-2">To'liq
+                        Xizmatlar:</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 mb-8 text-gray-600 text-sm">
+                        <li>Tezyurar poezd (Madina-Makka)</li>
+                        <li>2 mahal sifatli taomlar</li>
+                        <li>Ziyoratgohlar bo'ylab ekskursiyalar</li>
+                        <li>Ravzaga kirish imkoniyati</li>
+                        <li>Ilmli guruh rahbarlari</li>
+                        <li>Malakali shifokor nazorati</li>
+                        <li>Qizil dengiz bo'ylab sayohat</li>
+                    </div>
+
+                    <div
+                        class="bg-gray-50 p-6 rounded-3xl border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="text-center sm:text-left">
+                            <p class="text-xs text-gray-500 uppercase">Narx (4 kishilik xonada):</p>
+                            <p class="text-4xl font-bold text-brand-gold">$1390</p>
+                        </div>
+                        <a href="https://t.me/safomarvatour"
+                            class="w-full sm:w-auto bg-brand-red text-white px-10 py-4 rounded-2xl font-bold hover:bg-red-800 shadow-xl text-center">BOG'LANISH</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Why Choose Us -->
+    <section id="why-choose" class="py-24 bg-white reveal">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-serif text-brand-red mb-4">Nega Aynan Safo Marva Tour?</h2>
+                <div class="w-24 h-1 bg-brand-gold mx-auto"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div
+                    class="text-center p-8 rounded-3xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-brand-gold">
+                    <div class="text-4xl mb-6">📜</div>
+                    <h4 class="text-xl font-bold mb-4 uppercase">Litsenziyalangan</h4>
+                    <p class="text-gray-600">Davlat tomonidan berilgan barcha litsenziyalarga egamiz. Sizning
+                        xavfsizligingiz biz uchun birinchi o'rinda.</p>
+                </div>
+                <div
+                    class="text-center p-8 rounded-3xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-brand-gold">
+                    <div class="text-4xl mb-6">🕋</div>
+                    <h4 class="text-xl font-bold mb-4 uppercase">Tajribali Jamoa</h4>
+                    <p class="text-gray-600">Ko'p yillik tajribaga ega yo'lboshchilar va ilmli guruh rahbarlari sizga
+                        hamrohlik qiladi.</p>
+                </div>
+                <div
+                    class="text-center p-8 rounded-3xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-brand-gold">
+                    <div class="text-4xl mb-6">🛡️</div>
+                    <h4 class="text-xl font-bold mb-4 uppercase">Xotirjamlik</h4>
+                    <p class="text-gray-600">Siz faqat ibodat bilan band bo'lasiz, qolgan barcha tashkiliy ishlarni biz
+                        o'z zimmamizga olamiz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 bg-brand-dark text-white overflow-hidden">
+        <div class="container mx-auto px-6 mb-12">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6">
+                <div>
+                    <h2 class="text-4xl font-serif text-brand-gold mb-4">Ziyoratdan Lavhalar</h2>
+                    <p class="text-gray-400 max-w-md">Biz bilan birga bo'lgan ziyoratchilarimizning unutilmas lahzalari.
+                    </p>
+                </div>
+                <a href="https://t.me/safomarvatour"
+                    class="text-brand-gold border-b border-brand-gold pb-1 hover:text-white hover:border-white transition-all">Barchasini
+                    ko'rish →</a>
+            </div>
+        </div>
+
+        <!-- Marquee Slider -->
+        <div class="relative overflow-hidden group">
+            <div class="marquee-container flex space-x-6 px-6">
+                <!-- Original Set -->
+                <div class="flex space-x-6 flex-shrink-0">
+                    <img src="galereya/image.png" alt="Gallery 1"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy.png" alt="Gallery 2"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy 2.png" alt="Gallery 3"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy 3.png" alt="Gallery 4"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy 4.png" alt="Gallery 5"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy 5.png" alt="Gallery 6"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                </div>
+                <!-- Duplicate Set for loop -->
+                <div class="flex space-x-6 flex-shrink-0">
+                    <img src="galereya/image.png" alt="Gallery 1"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy.png" alt="Gallery 2"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy 2.png" alt="Gallery 3"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy 3.png" alt="Gallery 4"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy 4.png" alt="Gallery 5"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                    <img src="galereya/image copy 5.png" alt="Gallery 6"
+                        class="h-72 w-[28rem] object-cover rounded-3xl shadow-2xl flex-shrink-0">
+                </div>
+            </div>
+
+            <!-- Gradient Overlays for smooth edges -->
+            <div
+                class="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-brand-dark to-transparent z-10 pointer-events-none">
+            </div>
+            <div
+                class="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-brand-dark to-transparent z-10 pointer-events-none">
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-white reveal">
+        <div class="container mx-auto px-6">
+            <div class="bg-brand-gold rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-red/5 rounded-full -ml-32 -mb-32"></div>
+                <h3 class="text-brand-red text-4xl md:text-5xl font-serif mb-8 relative z-10">Sizning Muborak Safaringiz
+                    Shuyerdan Boshlanadi</h3>
+                <p class="text-brand-red/80 text-xl mb-12 max-w-2xl mx-auto relative z-10">Hoziroq bog'laning va bepul
+                    konsultatsiya oling. Joylar soni cheklangan!</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-6 relative z-10">
+                    <a href="tel:+998555177373"
+                        class="bg-brand-red text-white px-12 py-5 rounded-2xl font-bold text-xl hover:shadow-2xl transition-all">QO'NG'IROQ
+                        QILISH</a>
+                    <a href="https://t.me/safomarvatour"
+                        class="bg-white text-brand-red px-12 py-5 rounded-2xl font-bold text-xl hover:shadow-2xl transition-all">TELEGRAMDAN
+                        YOZISH</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-white py-20">
+        <div
+            class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-gray-800 pb-16 text-center md:text-left">
+            <div class="col-span-1 md:col-span-2 flex flex-col items-center md:items-start">
+                <img src="safo_marva.png" alt="Logo" class="h-20 mb-6 rounded-lg bg-white p-1">
+                <p class="text-gray-400 max-w-sm">SAFO MARVA TOUR — litsenziyalangan, xavfsiz va xotirjam ziyorat
+                    xizmati. Bizning maqsadimiz — sizning ibodatingizni qulay va esda qolarli qilish.</p>
+            </div>
+            <div>
+                <h4 class="text-brand-gold font-bold mb-6">ALOQA UCHUN</h4>
+                <div class="space-y-4">
+                    <p class="flex items-center justify-center md:justify-start text-gray-400"><span
+                            class="mr-3">📞</span> +998 55 517 73 73</p>
+                    <p class="flex items-center justify-center md:justify-start text-gray-400"><span
+                            class="mr-3">📞</span> +998 94 625 77 72</p>
+                    <p class="flex items-center justify-center md:justify-start text-gray-400"><span
+                            class="mr-3">📞</span> +998 90 484 99 91</p>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-brand-gold font-bold mb-6">IJTIMOIY TARMOQLAR</h4>
+                <div class="flex space-x-4 justify-center md:justify-start">
+                    <a href="https://t.me/safomarvatour"
+                        class="bg-gray-800 p-3 rounded-full hover:bg-brand-gold hover:text-brand-red transition-all group" title="Telegram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
+                            <path d="m22 2-7 20-4-9-9-4Z"/>
+                            <path d="M22 2 11 13"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/safomarva.tour"
+                        class="bg-gray-800 p-3 rounded-full hover:bg-brand-gold hover:text-brand-red transition-all group" title="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.51"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-6 pt-10 text-center text-gray-500 text-xs tracking-widest uppercase">
+            <p>&copy; 2026 SAFO MARVA TOUR. Barchasi litsenziyalangan.</p>
+        </div>
+        <!-- Back to Top -->
+        <button @click="window.scrollTo({top: 0, behavior: 'smooth'})" x-show="scrolled"
+            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-10"
+            x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-10"
+            class="fixed bottom-8 right-8 bg-brand-gold text-brand-red p-4 rounded-full shadow-2xl z-[60] hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+        </button>
+
+    </footer>
+
+    <script>
+        // Simple Intersection Observer for reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+
+</html>
