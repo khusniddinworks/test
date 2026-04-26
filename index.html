@@ -107,74 +107,7 @@
     </style>
 </head>
 
-<body class="bg-gray-50 font-sans text-gray-900" x-data="{ 
-    activeModal: null, 
-    scrolled: false, 
-    mobileMenu: false,
-    lightboxImages: [],
-    lightboxIndex: 0,
-    bookingName: '',
-    bookingPhone: '',
-    bookingRoom: '4 kishilik',
-    selectedPackage: '',
-    showSuccess: false,
-    isSubmitting: false,
-    init() {
-        this.$watch('activeModal', value => {
-            if (!value) {
-                document.querySelectorAll('video').forEach(v => {
-                    v.pause();
-                    v.currentTime = 0;
-                });
-            }
-        });
-    },
-    openLightbox(imgs, index) {
-        this.lightboxImages = imgs;
-        this.lightboxIndex = index;
-    },
-    submitBooking() {
-        // Honeypot check (Antispam)
-        if (document.getElementById('hp_field').value !== "") return;
-
-        if(this.bookingName && this.bookingPhone && !this.isSubmitting) {
-            this.isSubmitting = true;
-            
-            // Basic Sanitization
-            const cleanName = this.bookingName.replace(/[<>]/g, "");
-            const cleanPhone = this.bookingPhone.replace(/[<>]/g, "");
-            
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsL7MBQpvYRoPjLznfNuBR9X42wY_uqRzdov0aNe-LlpSeTB4VMkHdI7ORLPFI3z90/exec';
-            
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: cleanName,
-                    phone: cleanPhone,
-                    package: this.selectedPackage,
-                    room: this.bookingRoom
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                this.isSubmitting = false;
-                this.showSuccess = true;
-                setTimeout(() => { 
-                    this.showSuccess = false; 
-                    this.activeModal = null;
-                    this.bookingName = '';
-                    this.bookingPhone = '';
-                }, 3000);
-            })
-            .catch(error => {
-                this.isSubmitting = false;
-                console.error('Error!', error.message);
-                alert('Xatolik yuz berdi. Iltimos qaytadan urinib ko\'ring.');
-            });
-        }
-    }
-}"
-    @scroll.window="scrolled = (window.pageYOffset > 50)">
+<body class="bg-gray-50 font-sans text-gray-900" x-data="tourApp()" @scroll.window="scrolled = (window.pageYOffset > 50)">
 
     <!-- Navbar -->
     <nav class="fixed w-full z-50 py-4 transition-all duration-300"
@@ -1035,6 +968,72 @@
         }, { threshold: 0.1 });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+    <script>
+        function tourApp() {
+            return {
+                activeModal: null,
+                scrolled: false,
+                mobileMenu: false,
+                lightboxImages: [],
+                lightboxIndex: 0,
+                bookingName: '',
+                bookingPhone: '',
+                bookingRoom: '4 kishilik',
+                selectedPackage: '',
+                showSuccess: false,
+                isSubmitting: false,
+                init() {
+                    this.$watch('activeModal', value => {
+                        if (!value) {
+                            document.querySelectorAll('video').forEach(v => {
+                                v.pause();
+                                v.currentTime = 0;
+                            });
+                        }
+                    });
+                },
+                openLightbox(imgs, index) {
+                    this.lightboxImages = imgs;
+                    this.lightboxIndex = index;
+                },
+                submitBooking() {
+                    if (document.getElementById('hp_field').value !== "") return;
+                    if(this.bookingName && this.bookingPhone && !this.isSubmitting) {
+                        this.isSubmitting = true;
+                        const cleanName = this.bookingName.replace(/[<>]/g, "");
+                        const cleanPhone = this.bookingPhone.replace(/[<>]/g, "");
+                        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsL7MBQpvYRoPjLznfNuBR9X42wY_uqRzdov0aNe-LlpSeTB4VMkHdI7ORLPFI3z90/exec';
+                        
+                        fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                name: cleanName,
+                                phone: cleanPhone,
+                                package: this.selectedPackage,
+                                room: this.bookingRoom
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            this.isSubmitting = false;
+                            this.showSuccess = true;
+                            setTimeout(() => {
+                                this.showSuccess = false;
+                                this.activeModal = null;
+                                this.bookingName = '';
+                                this.bookingPhone = '';
+                            }, 3000);
+                        })
+                        .catch(error => {
+                            this.isSubmitting = false;
+                            console.error('Error!', error.message);
+                            alert('Xatolik yuz berdi. Iltimos qaytadan urinib ko\'ring.');
+                        });
+                    }
+                }
+            }
+        }
     </script>
 </body>
 
