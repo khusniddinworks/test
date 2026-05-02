@@ -29,9 +29,12 @@ class AdminState(StatesGroup):
 
 # --- ADMINLARNI TEKSHIRISH ---
 async def get_admin_role(user_id):
-    if user_id == SUPER_MANAGER_ID: return "super_manager"
     res = supabase.table("admins").select("role").eq("id", user_id).execute()
-    return res.data[0]['role'] if res.data else None
+    if res.data:
+        return res.data[0]['role']
+    if user_id == SUPER_MANAGER_ID:
+        return "super_manager"
+    return None
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -41,7 +44,7 @@ async def cmd_start(message: types.Message):
         if role == "super_manager":
             kb.append([types.KeyboardButton(text="👤 Adminlarni boshqarish")])
         keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
-        await message.answer(f"Xush kelibsiz {role.replace('_', ' ').capitalize()}!", reply_markup=keyboard)
+        await message.answer(f"Xush kelibsiz! Sizning lavozimingiz: {role.replace('_', ' ').upper()}", reply_markup=keyboard)
     elif role == "lead_admin":
         await message.answer("Xush kelibsiz Lead Admin! Yangi murojaatlar sizga avtomatik keladi.")
     else:
@@ -122,6 +125,78 @@ async def update_price(message: types.Message, state: FSMContext):
     await message.answer("✅ Saytda narx o'zgardi.")
     await state.clear()
 
+import datetime
+from datetime import timedelta
+
+# --- STATUS TUGMALARI ---
+def get_status_kb(lead_id):
+    kb = [
+        [
+            types.InlineKeyboardButton(text="✅ Bog'lanildi", callback_data=f"st:done:{lead_id}"),
+            types.InlineKeyboardButton(text="⌛ O'ylayapti", callback_data=f"st:wait:{lead_id}")
+        ],
+        [
+            types.InlineKeyboardButton(text="❌ Rad etdi", callback_data=f"st:cancel:{lead_id}")
+        ]
+    ]
+    return types.InlineKeyboardMarkup(inline_keyboard=kb)
+
+@dp.callback_query(F.data.startswith("st:"))
+async def process_status(callback: types.CallbackQuery):
+    _, status, lead_id = callback.data.split(":")
+    status_map = {"done": "✅ Bog'lanildi", "wait": "⌛ O'ylayapti", "cancel": "❌ Rad etdi"}
+    
+    supabase.table("leads").update({"status": status}).eq("id", lead_id).execute()
+    await callback.answer(f"Status yangilandi: {status_map[status]}")
+    await callback.message.edit_text(callback.message.text + f"\n\n📍 STATUS: {status_map[status]}")
+
+# --- HAFTALIK HISOBOT ---
+async def send_weekly_report():
+    now = datetime.datetime.now()
+    week_ago = (now - timedelta(days=7)).isoformat()
+    
+    res = supabase.table("leads").select("*").gte("created_at", week_ago).execute()
+    leads = res.data
+    
+    if not leads:
+        await bot.send_message(chat_id=SUPER_MANAGER_ID, text="📊 Bu hafta murojaatlar tushmadi.")
+        return
+    
+    total = len(leads)
+    done = len([l for l in leads if l['status'] == 'done'])
+    wait = len([l for l in leads if l['status'] == 'wait'])
+    cancel = len([l for l in leads if l['status'] == 'cancel'])
+    yangi = len([l for l in leads if l['status'] == 'yangi'])
+    
+    # Manbalar (Instagram, Telegram va h.k.)
+    sources = {}
+    for l in leads:
+        src = l.get('source', 'togriga')
+        sources[src] = sources.get(src, 0) + 1
+    
+    src_text = "\n".join([f"🔹 {k.capitalize()}: {v} ta" for k, v in sources.items()])
+    
+    report = (f"📊 **HAFTALIK HISOBOT**\n"
+              f"📅 {week_ago[:10]} dan boshlab\n\n"
+              f"📥 Jami murojaatlar: {total} ta\n"
+              f"━━━━━━━━━━━━━━━\n"
+              f"✅ Bog'lanilgan: {done}\n"
+              f"⌛ O'ylayapti: {wait}\n"
+              f"❌ Rad etilgan: {cancel}\n"
+              f"🆕 Hali ochilmagan: {yangi}\n\n"
+              f"🌍 **MANBALAR:**\n{src_text}")
+    
+    await bot.send_message(chat_id=SUPER_MANAGER_ID, text=report)
+
+async def scheduler():
+    while True:
+        now = datetime.datetime.now()
+        # Shanba (5) soat 16:00
+        if now.weekday() == 5 and now.hour == 16 and now.minute == 0:
+            await send_weekly_report()
+            await asyncio.sleep(60) # Ikki marta yubormasligi uchun
+        await asyncio.sleep(30)
+
 # --- LEADLARNI TEKSHIRISH ---
 async def check_leads():
     last_id = 0
@@ -132,21 +207,35 @@ async def check_leads():
         try:
             new_leads = supabase.table("leads").select("*").gt("id", last_id).execute()
             if new_leads.data:
-                # FAQAT Lead Adminlarni olamiz
-                admins = supabase.table("admins").select("id").eq("role", "lead_admin").execute()
-                admin_ids = [a['id'] for a in admins.data]
+                admins_res = supabase.table("admins").select("id").eq("role", "lead_admin").order("id").execute()
+                lead_admins = admins_res.data
                 
-                for lead in new_leads.data:
-                    text = f"🔔 YANGI MUROJAAT!\n👤 {lead['name']}\n📞 {lead['phone']}\n📦 {lead['package']}"
-                    for aid in admin_ids:
-                        try: await bot.send_message(chat_id=aid, text=text)
+                if lead_admins:
+                    num_admins = len(lead_admins)
+                    for lead in new_leads.data:
+                        admin_index = lead['id'] % num_admins
+                        target_admin_id = lead_admins[admin_index]['id']
+                        
+                        time_str = datetime.datetime.fromisoformat(lead['created_at'].replace('Z', '+00:00')).strftime('%H:%M, %d.%m.%Y')
+                        
+                        text = (f"🎯 **SIZGA MIJOZ BIRIKTIRILDI**\n\n"
+                                f"📦 Paket: {lead['package']}\n"
+                                f"👤 Ism: {lead['name']}\n"
+                                f"📞 Tel: {lead['phone']}\n"
+                                f"🏠 Xona: {lead['room']}\n"
+                                f"🌍 Manba: {lead.get('source', 'togriga')}\n"
+                                f"⏰ Vaqt: {time_str}")
+                        
+                        try:
+                            await bot.send_message(chat_id=target_admin_id, text=text, reply_markup=get_status_kb(lead['id']))
                         except: pass
-                    last_id = max(last_id, lead['id'])
+                        last_id = max(last_id, lead['id'])
         except Exception as e: logging.error(e)
         await asyncio.sleep(10)
 
 async def main():
     asyncio.create_task(check_leads())
+    asyncio.create_task(scheduler())
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
