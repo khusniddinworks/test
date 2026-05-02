@@ -233,7 +233,26 @@ async def check_leads():
         except Exception as e: logging.error(e)
         await asyncio.sleep(10)
 
+from aiohttp import web
+import os
+
+# --- KEEP ALIVE WEB SERVER (For Render) ---
+async def handle(request):
+    return web.Response(text="Bot is running!")
+
+async def start_web_server():
+    app = web.Application()
+    app.router.add_get("/", handle)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.getenv("PORT", 8080))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    logging.info(f"Web server started on port {port}")
+
 async def main():
+    # Web server va Botni parallel ishga tushiramiz
+    await start_web_server()
     asyncio.create_task(check_leads())
     asyncio.create_task(scheduler())
     await dp.start_polling(bot)
