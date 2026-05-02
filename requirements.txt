@@ -1,0 +1,5 @@
+aiogram
+supabase
+python-dotenv
+aiohttp
+datetime
