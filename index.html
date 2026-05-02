@@ -8,16 +8,188 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        const SUPABASE_URL = "https://hddpzctigsjqljtooogq.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkZHB6Y3RpZ3NqcWxqdG9vb2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2Mzc0MDAsImV4cCI6MjA5MzIxMzQwMH0.OfwTe9X1_hGzdYVrV2hF_DmFwNBVjjVkQLcAmV_uA84";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function tourApp() {
+            return {
+                lang: localStorage.getItem('site_lang') || 'uz',
+                scrolled: false,
+                mobileMenu: false,
+                activeModal: null,
+                selectedPackage: '',
+                bookingName: '',
+                bookingPhone: '',
+                bookingRoom: 'Standard',
+                isSubmitting: false,
+                showSuccess: false,
+                source: 'togriga',
+                packagesData: {},
+                
+                translations: {
+                    uz: {
+                        site_title: "Safo Marva Tour - Umra Ziyorati 2026",
+                        site_desc: "O'zbekistondagi ishonchli Umra va Haj sayohat agentligi. Iyun va iyul oylari uchun maxsus paketlar.",
+                        site_keywords: "Umra 2026, Safo Marva, Haj, Saudiya Arabistoni, Toshkent Umra",
+                        nav_packages: "Paketlar", nav_why: "Nega biz?", nav_gallery: "Galereya",
+                        hero_subtitle: "Muborak Safarga Marhamat",
+                        hero_title: "Yangi Mavsum — <span class='gold-text'>Iyun-Iyul</span>",
+                        hero_desc: "SAFO MARVA TOUR bilan — litsenziyalangan, xavfsiz va xotirjam ziyorat!",
+                        hero_cta1: "PAKETLARNI KO'RISH", hero_cta2: "KONSULTATSIYA",
+                        pkg_title: "Umra Paketlari", pkg_desc: "Siz va yaqinlaringiz uchun barcha qulayliklarga ega takliflar.",
+                        '10_nights': "10 KECHALIK", details: "Batafsil", book_now: "Band qilish",
+                        pkg_standard: "Standart Paket", pkg_comfort: "Komfort Paket", pkg_lux: "LUX Paket", pkg_premium: "LUX Premium",
+                        popular: "Ommabop", premium: "Premium",
+                        why_title: "Nega Safo Marva?",
+                        why_1_title: "Litsenziyalangan", why_1_desc: "Davlat litsenziyalariga egamiz. Xavfsizlik kafolatlangan.",
+                        why_2_title: "Tajribali jamoa", why_2_desc: "Ko'p yillik tajribaga ega yo'lboshchilar sizga hamrohlik qiladi.",
+                        why_3_title: "Xotirjamlik", why_3_desc: "Faqat ibodat bilan band bo'lasiz, qolganini biz hal qilamiz.",
+                        footer_desc: "Bizning maqsadimiz — sizning ibodatingizni qulay va esda qolarli qilish.",
+                        book_title: "Safarga yoziling", book_subtitle: "Ma'lumotlaringizni qoldiring, menejer bog'lanadi.",
+                        placeholder_name: "Ismingiz", placeholder_phone: "Telefon raqamingiz",
+                        selected: "Tanlangan:", submit: "YUBORISH",
+                        success_title: "Qabul qilindi!", success_desc: "Menejerimiz tez orada bog'lanadi."
+                    },
+                    ru: {
+                        site_title: "Safo Marva Tour - Умра 2026",
+                        site_desc: "Надежное агентство Хаджа и Умры в Узбекистане. Специальные пакеты на июнь и июль.",
+                        site_keywords: "Умра 2026, Сафо Марва, Хадж, Саудовская Аравия, Ташкент Умра",
+                        nav_packages: "Пакеты", nav_why: "Почему мы?", nav_gallery: "Галерея",
+                        hero_subtitle: "Приглашаем в Священное Путешествие",
+                        hero_title: "Новый Сезон — <span class='gold-text'>Июнь-Июль</span>",
+                        hero_desc: "С SAFO MARVA TOUR — лицензированное, безопасное и спокойное паломничество!",
+                        hero_cta1: "СМОТРЕТЬ ПАКЕТЫ", hero_cta2: "КОНСУЛЬТАЦИЯ",
+                        pkg_title: "Пакеты Умры", pkg_desc: "Специально разработанные предложения со всеми удобствами для вас.",
+                        '10_nights': "10 НОЧЕЙ", details: "Подробнее", book_now: "Забронировать",
+                        pkg_standard: "Стандарт", pkg_comfort: "Комфорт", pkg_lux: "Люкс", pkg_premium: "Люкс Премиум",
+                        popular: "Популярный", premium: "Премиум",
+                        why_title: "Почему Safo Marva?",
+                        why_1_title: "Лицензия", why_1_desc: "У нас есть все лицензии. Безопасность гарантирована.",
+                        why_2_title: "Опытная команда", why_2_desc: "Вас будут сопровождать гиды с многолетним опытом.",
+                        why_3_title: "Спокойствие", why_3_desc: "Вы занимаетесь только поклонением, остальное — на нас.",
+                        footer_desc: "Наша цель — сделать ваше паломничество комфортным и незабываемым.",
+                        book_title: "Запись на поездку", book_subtitle: "Оставьте данные, менеджер свяжется с вами.",
+                        placeholder_name: "Ваше имя", placeholder_phone: "Ваш телефон",
+                        selected: "Выбрано:", submit: "ОТПРАВИТЬ",
+                        success_title: "Принято!", success_desc: "Менеджер свяжется с вами в ближайшее время."
+                    },
+                    en: {
+                        site_title: "Safo Marva Tour - Umrah 2026",
+                        site_desc: "Trusted Hajj & Umrah agency in Uzbekistan. Special packages for June and July.",
+                        site_keywords: "Umrah 2026, Safo Marva, Hajj, Saudi Arabia, Tashkent Umrah",
+                        nav_packages: "Packages", nav_why: "Why Us?", nav_gallery: "Gallery",
+                        hero_subtitle: "Welcome to the Holy Journey",
+                        hero_title: "New Season — <span class='gold-text'>June-July</span>",
+                        hero_desc: "With SAFO MARVA TOUR — licensed, safe, and peaceful pilgrimage!",
+                        hero_cta1: "VIEW PACKAGES", hero_cta2: "CONSULTATION",
+                        pkg_title: "Umrah Packages", pkg_desc: "Specially designed offers with all comforts for you and your family.",
+                        '10_nights': "10 NIGHTS", details: "Details", book_now: "Book Now",
+                        pkg_standard: "Standard", pkg_comfort: "Comfort", pkg_lux: "LUX", pkg_premium: "LUX Premium",
+                        popular: "Popular", premium: "Premium",
+                        why_title: "Why Safo Marva?",
+                        why_1_title: "Licensed", why_1_desc: "We hold all state licenses. Your safety is our priority.",
+                        why_2_title: "Expert Team", why_2_desc: "Experienced guides will accompany you throughout the journey.",
+                        why_3_title: "Peace of Mind", why_3_desc: "Focus on your prayers, we handle everything else.",
+                        footer_desc: "Our goal is to make your pilgrimage comfortable and memorable.",
+                        book_title: "Book Your Journey", book_subtitle: "Leave your details, a manager will contact you.",
+                        placeholder_name: "Your Name", placeholder_phone: "Your Phone",
+                        selected: "Selected:", submit: "SUBMIT",
+                        success_title: "Received!", success_desc: "Our manager will contact you shortly."
+                    }
+                },
+
+                t(key) {
+                    try {
+                        return this.translations[this.lang][key] || key;
+                    } catch (e) {
+                        return key;
+                    }
+                },
+
+                init() {
+                    this.$watch('lang', val => localStorage.setItem('site_lang', val));
+                    this.fetchPrices();
+                    
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const from = urlParams.get('from') || urlParams.get('utm_source');
+                    if (from) {
+                        this.source = from;
+                        localStorage.setItem('lead_source', from);
+                    } else {
+                        this.source = localStorage.getItem('lead_source') || 'togriga';
+                    }
+
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) entry.target.classList.add('active');
+                        });
+                    }, { threshold: 0.1 });
+                    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+                },
+
+                async fetchPrices() {
+                    try {
+                        const { data } = await supabaseClient.from('packages').select('*');
+                        if (data) {
+                            data.forEach(pkg => {
+                                this.packagesData[pkg.key_name] = pkg;
+                            });
+                        }
+                    } catch (e) { console.error(e); }
+                },
+
+                async submitBooking() {
+                    if (document.getElementById('hp_field').value !== "") return;
+                    
+                    const cleanName = this.bookingName.trim();
+                    const cleanPhone = this.bookingPhone.trim().replace(/[^+0-9]/g, "");
+                    
+                    if (!cleanName || !cleanPhone) {
+                        alert("Iltimos, ma'lumotlarni to'ldiring.");
+                        return;
+                    }
+
+                    if(!this.isSubmitting) {
+                        this.isSubmitting = true;
+                        try {
+                            const { error } = await supabaseClient
+                                .from('leads')
+                                .insert([{ 
+                                    name: cleanName, 
+                                    phone: cleanPhone, 
+                                    package: this.selectedPackage, 
+                                    room: this.bookingRoom,
+                                    source: this.source 
+                                }]);
+                            
+                            if (error) throw error;
+                            this.showSuccess = true;
+                            setTimeout(() => {
+                                this.activeModal = null;
+                                this.showSuccess = false;
+                                this.bookingName = '';
+                                this.bookingPhone = '';
+                            }, 3000);
+                        } catch (err) {
+                            alert("Error! Please try again.");
+                        } finally {
+                            this.isSubmitting = false;
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <!-- Dynamic SEO -->
-    <title x-text="t('site_title')"></title>
+    <title x-text="t('site_title')">Safo Marva Tour</title>
     <meta name="description" :content="t('site_desc')">
     <meta name="keywords" :content="t('site_keywords')">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" :content="t('site_title')">
-    <meta property="og:description" :content="t('site_desc')">
-    <meta property="og:image" content="safo_marva.png">
-    <meta property="og:type" content="website">
     
     <link rel="icon" type="image/png" href="safo_marva.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -36,14 +208,7 @@
             }
         }
     </script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <script>
-        const SUPABASE_URL = "https://hddpzctigsjqljtooogq.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkZHB6Y3RpZ3NqcWxqdG9vb2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2Mzc0MDAsImV4cCI6MjA5MzIxMzQwMH0.OfwTe9X1_hGzdYVrV2hF_DmFwNBVjjVkQLcAmV_uA84";
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    </script>
     <style>
         .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
         .hero-gradient { background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; }
@@ -73,7 +238,6 @@
             </div>
 
             <div class="flex items-center space-x-4">
-                <!-- Language Switcher -->
                 <div class="flex bg-black/20 rounded-full p-1 text-[10px] font-bold text-white">
                     <button @click="lang = 'uz'" :class="lang === 'uz' ? 'bg-brand-gold text-brand-red' : ''" class="px-2 py-1 rounded-full transition-all">UZ</button>
                     <button @click="lang = 'ru'" :class="lang === 'ru' ? 'bg-brand-gold text-brand-red' : ''" class="px-2 py-1 rounded-full transition-all">RU</button>
@@ -87,7 +251,6 @@
             </div>
         </div>
         
-        <!-- Mobile Menu Overlay -->
         <div x-show="mobileMenu" x-cloak class="lg:hidden bg-brand-red p-6 space-y-4 text-center text-white" x-transition>
             <a href="#packages" @click="mobileMenu = false" class="block text-sm uppercase" x-text="t('nav_packages')"></a>
             <a href="#why-choose" @click="mobileMenu = false" class="block text-sm uppercase" x-text="t('nav_why')"></a>
@@ -102,8 +265,8 @@
             <h1 class="text-4xl md:text-7xl font-serif mb-6 leading-tight" x-html="t('hero_title')"></h1>
             <p class="text-lg md:text-xl mb-10 text-gray-200" x-text="t('hero_desc')"></p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#packages" class="bg-brand-gold text-brand-red px-10 py-4 rounded-full font-bold text-sm hover:scale-105 transition-all shadow-lg" x-text="t('hero_cta1')"></a>
-                <a href="tel:+998555177373" class="border border-white text-white px-10 py-4 rounded-full font-bold text-sm hover:bg-white hover:text-brand-red transition-all" x-text="t('hero_cta2')"></a>
+                <a href="#packages" class="bg-brand-gold text-brand-red px-10 py-4 rounded-full font-bold text-sm hover:scale-105 transition-all shadow-lg flex items-center justify-center" x-text="t('hero_cta1')"></a>
+                <a href="tel:+998555177373" class="border border-white text-white px-10 py-4 rounded-full font-bold text-sm hover:bg-white hover:text-brand-red transition-all flex items-center justify-center" x-text="t('hero_cta2')"></a>
             </div>
         </div>
     </section>
@@ -217,7 +380,6 @@
                     <span x-text="t('selected')"></span>
                     <span x-text="selectedPackage"></span>
                 </div>
-                <!-- HP Field (Spam protection) -->
                 <input type="text" id="hp_field" class="hidden" value="">
                 
                 <button @click="submitBooking()" :disabled="isSubmitting" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold text-sm shadow-xl hover:bg-red-800 disabled:opacity-50 flex justify-center items-center">
@@ -232,174 +394,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Scripts -->
-    <script>
-        function tourApp() {
-            return {
-                lang: localStorage.getItem('site_lang') || 'uz',
-                scrolled: false,
-                mobileMenu: false,
-                activeModal: null,
-                selectedPackage: '',
-                bookingName: '',
-                bookingPhone: '',
-                bookingRoom: 'Standard',
-                isSubmitting: false,
-                showSuccess: false,
-                source: 'togriga',
-                packagesData: {},
-                
-                translations: {
-                    uz: {
-                        site_title: "Safo Marva Tour - Umra Ziyorati 2026",
-                        site_desc: "O'zbekistondagi ishonchli Umra va Haj sayohat agentligi. Iyun va iyul oylari uchun maxsus paketlar.",
-                        site_keywords: "Umra 2026, Safo Marva, Haj, Saudiya Arabistoni, Toshkent Umra",
-                        nav_packages: "Paketlar", nav_why: "Nega biz?", nav_gallery: "Galereya",
-                        hero_subtitle: "Muborak Safarga Marhamat",
-                        hero_title: "Yangi Mavsum — <span class='gold-text'>Iyun-Iyul</span>",
-                        hero_desc: "SAFO MARVA TOUR bilan — litsenziyalangan, xavfsiz va xotirjam ziyorat!",
-                        hero_cta1: "PAKETLARNI KO'RISH", hero_cta2: "KONSULTATSIYA",
-                        pkg_title: "Umra Paketlari", pkg_desc: "Siz va yaqinlaringiz uchun barcha qulayliklarga ega takliflar.",
-                        10_nights: "10 KECHALIK", details: "Batafsil", book_now: "Band qilish",
-                        pkg_standard: "Standart Paket", pkg_comfort: "Komfort Paket", pkg_lux: "LUX Paket", pkg_premium: "LUX Premium",
-                        popular: "Ommabop", premium: "Premium",
-                        why_title: "Nega Safo Marva?",
-                        why_1_title: "Litsenziyalangan", why_1_desc: "Davlat litsenziyalariga egamiz. Xavfsizlik kafolatlangan.",
-                        why_2_title: "Tajribali jamoa", why_2_desc: "Ko'p yillik tajribaga ega yo'lboshchilar sizga hamrohlik qiladi.",
-                        why_3_title: "Xotirjamlik", why_3_desc: "Faqat ibodat bilan band bo'lasiz, qolganini biz hal qilamiz.",
-                        footer_desc: "Bizning maqsadimiz — sizning ibodatingizni qulay va esda qolarli qilish.",
-                        book_title: "Safarga yoziling", book_subtitle: "Ma'lumotlaringizni qoldiring, menejer bog'lanadi.",
-                        placeholder_name: "Ismingiz", placeholder_phone: "Telefon raqamingiz",
-                        selected: "Tanlangan:", submit: "YUBORISH",
-                        success_title: "Qabul qilindi!", success_desc: "Menejerimiz tez orada bog'lanadi."
-                    },
-                    ru: {
-                        site_title: "Safo Marva Tour - Умра 2026",
-                        site_desc: "Надежное агентство Хаджа и Умры в Узбекистане. Специальные пакеты на июнь и июль.",
-                        site_keywords: "Умра 2026, Сафо Марва, Хадж, Саудовская Аравия, Ташкент Умра",
-                        nav_packages: "Пакеты", nav_why: "Почему мы?", nav_gallery: "Галерея",
-                        hero_subtitle: "Приглашаем в Священное Путешествие",
-                        hero_title: "Новый Сезон — <span class='gold-text'>Июнь-Июль</span>",
-                        hero_desc: "С SAFO MARVA TOUR — лицензированное, безопасное и спокойное паломничество!",
-                        hero_cta1: "СМОТРЕТЬ ПАКЕТЫ", hero_cta2: "КОНСУЛЬТАЦИЯ",
-                        pkg_title: "Пакеты Умры", pkg_desc: "Специально разработанные предложения со всеми удобствами для вас.",
-                        10_nights: "10 НОЧЕЙ", details: "Подробнее", book_now: "Забронировать",
-                        pkg_standard: "Стандарт", pkg_comfort: "Комфорт", pkg_lux: "Люкс", pkg_premium: "Люкс Премиум",
-                        popular: "Популярный", premium: "Премиум",
-                        why_title: "Почему Safo Marva?",
-                        why_1_title: "Лицензия", why_1_desc: "У нас есть все лицензии. Безопасность гарантирована.",
-                        why_2_title: "Опытная команда", why_2_desc: "Вас будут сопровождать гиды с многолетним опытом.",
-                        why_3_title: "Спокойствие", why_3_desc: "Вы занимаетесь только поклонением, остальное — на нас.",
-                        footer_desc: "Наша цель — сделать ваше паломничество комфортным и незабываемым.",
-                        book_title: "Запись на поездку", book_subtitle: "Оставьте данные, менеджер свяжется с вами.",
-                        placeholder_name: "Ваше имя", placeholder_phone: "Ваш телефон",
-                        selected: "Выбрано:", submit: "ОТПРАВИТЬ",
-                        success_title: "Принято!", success_desc: "Менеджер свяжется с вами в ближайшее время."
-                    },
-                    en: {
-                        site_title: "Safo Marva Tour - Umrah 2026",
-                        site_desc: "Trusted Hajj & Umrah agency in Uzbekistan. Special packages for June and July.",
-                        site_keywords: "Umrah 2026, Safo Marva, Hajj, Saudi Arabia, Tashkent Umrah",
-                        nav_packages: "Packages", nav_why: "Why Us?", nav_gallery: "Gallery",
-                        hero_subtitle: "Welcome to the Holy Journey",
-                        hero_title: "New Season — <span class='gold-text'>June-July</span>",
-                        hero_desc: "With SAFO MARVA TOUR — licensed, safe, and peaceful pilgrimage!",
-                        hero_cta1: "VIEW PACKAGES", hero_cta2: "CONSULTATION",
-                        pkg_title: "Umrah Packages", pkg_desc: "Specially designed offers with all comforts for you and your family.",
-                        10_nights: "10 NIGHTS", details: "Details", book_now: "Book Now",
-                        pkg_standard: "Standard", pkg_comfort: "Comfort", pkg_lux: "LUX", pkg_premium: "LUX Premium",
-                        popular: "Popular", premium: "Premium",
-                        why_title: "Why Safo Marva?",
-                        why_1_title: "Licensed", why_1_desc: "We hold all state licenses. Your safety is our priority.",
-                        why_2_title: "Expert Team", why_2_desc: "Experienced guides will accompany you throughout the journey.",
-                        why_3_title: "Peace of Mind", why_3_desc: "Focus on your prayers, we handle everything else.",
-                        footer_desc: "Our goal is to make your pilgrimage comfortable and memorable.",
-                        book_title: "Book Your Journey", book_subtitle: "Leave your details, a manager will contact you.",
-                        placeholder_name: "Your Name", placeholder_phone: "Your Phone",
-                        selected: "Selected:", submit: "SUBMIT",
-                        success_title: "Received!", success_desc: "Our manager will contact you shortly."
-                    }
-                },
-
-                t(key) {
-                    return this.translations[this.lang][key] || key;
-                },
-
-                init() {
-                    this.$watch('lang', val => localStorage.setItem('site_lang', val));
-                    this.fetchPrices();
-                    
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const from = urlParams.get('from') || urlParams.get('utm_source');
-                    if (from) {
-                        this.source = from;
-                        localStorage.setItem('lead_source', from);
-                    } else {
-                        this.source = localStorage.getItem('lead_source') || 'togriga';
-                    }
-
-                    // Reveal on scroll logic
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) entry.target.classList.add('active');
-                        });
-                    }, { threshold: 0.1 });
-                    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-                },
-
-                async fetchPrices() {
-                    try {
-                        const { data } = await supabaseClient.from('packages').select('*');
-                        if (data) {
-                            data.forEach(pkg => {
-                                this.packagesData[pkg.key_name] = pkg;
-                            });
-                        }
-                    } catch (e) { console.error(e); }
-                },
-
-                async submitBooking() {
-                    if (document.getElementById('hp_field').value !== "") return;
-                    
-                    const cleanName = this.bookingName.trim();
-                    const cleanPhone = this.bookingPhone.trim().replace(/[^+0-9]/g, "");
-                    
-                    if (!cleanName || !cleanPhone) {
-                        alert("Iltimos, ma'lumotlarni to'ldiring.");
-                        return;
-                    }
-
-                    if(!this.isSubmitting) {
-                        this.isSubmitting = true;
-                        try {
-                            const { error } = await supabaseClient
-                                .from('leads')
-                                .insert([{ 
-                                    name: cleanName, 
-                                    phone: cleanPhone, 
-                                    package: this.selectedPackage, 
-                                    room: this.bookingRoom,
-                                    source: this.source 
-                                }]);
-                            
-                            if (error) throw error;
-                            this.showSuccess = true;
-                            setTimeout(() => {
-                                this.activeModal = null;
-                                this.showSuccess = false;
-                                this.bookingName = '';
-                                this.bookingPhone = '';
-                            }, 3000);
-                        } catch (err) {
-                            alert("Error! Please try again.");
-                        } finally {
-                            this.isSubmitting = false;
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 </body>
 </html>
