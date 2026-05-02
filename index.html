@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hddpzctigsjqljtooogq.supabase.co;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; video-src 'self' https: blob:;">
     <title>Safo Marva Tour - Umra Ziyorati 2026</title>
     <link rel="stylesheet" href="./src/input.css">
@@ -28,9 +31,16 @@
         }
     </script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
+    <script>
+        // Supabase Initialization
+        const SUPABASE_URL = "https://hddpzctigsjqljtooogq.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkZHB6Y3RpZ3NqcWxqdG9vb2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2Mzc0MDAsImV4cCI6MjA5MzIxMzQwMH0.OfwTe9X1_hGzdYVrV2hF_DmFwNBVjjVkQLcAmV_uA84";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
     <meta name="description"
         content="Safo Marva Tour - O'zbekistondagi ishonchli Umra va Haj sayohat agentligi. 2026-yilgi iyun va iyul oylari uchun maxsus paketlar va qulay ziyorat imkoniyatlari.">
     <meta name="keywords"
@@ -206,8 +216,8 @@
                     <span class="text-brand-red font-bold text-xs tracking-widest uppercase mb-2">10 KECHALIK</span>
                     <h3 class="text-xl font-bold mb-4 uppercase">Standart Paket</h3>
                     <p class="text-gray-500 text-sm mb-6">Sifatli va hamyonbop tanlov.</p>
-                    <div class="text-3xl font-bold text-brand-gold mb-6">$1150 <span
-                            class="text-sm text-gray-400 font-normal">/ dan</span></div>
+                    <div class="text-3xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.standard?.price || '1150'"></span> <span
+                             class="text-sm text-gray-400 font-normal">/ dan</span></div>
                     <div class="mt-auto space-y-3">
                         <button @click="activeModal = 'standard'"
                             class="w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors">Batafsil
@@ -227,7 +237,7 @@
                     <span class="text-brand-red font-bold text-xs tracking-widest uppercase mb-2">10 KECHALIK</span>
                     <h3 class="text-xl font-bold mb-4 uppercase">Komfort Paket</h3>
                     <p class="text-gray-500 text-sm mb-6">Qulay mehmonxona va yuqori darajadagi xizmat.</p>
-                    <div class="text-3xl font-bold text-brand-gold mb-6">$1300 <span
+                    <div class="text-3xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.comfort?.price || '1300'"></span> <span
                             class="text-sm text-gray-400 font-normal">/ dan</span></div>
                     <div class="mt-auto space-y-3">
                         <button @click="activeModal = 'comfort'"
@@ -245,7 +255,7 @@
                     <span class="text-brand-red font-bold text-xs tracking-widest uppercase mb-2">10 KECHALIK</span>
                     <h3 class="text-xl font-bold mb-4 uppercase">LUX Paket</h3>
                     <p class="text-gray-500 text-sm mb-6">Haramga yaqin va premium mehmonxonalar.</p>
-                    <div class="text-3xl font-bold text-brand-gold mb-6">$1550 <span
+                    <div class="text-3xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.lux?.price || '1550'"></span> <span
                             class="text-sm text-gray-400 font-normal">/ dan</span></div>
                     <div class="mt-auto space-y-3">
                         <button @click="activeModal = 'lux'"
@@ -263,7 +273,7 @@
                     <span class="text-brand-gold font-bold text-xs tracking-widest uppercase mb-2">PREMIUM</span>
                     <h3 class="text-xl font-bold mb-4 uppercase">LUX Premium</h3>
                     <p class="text-gray-400 text-sm mb-6">Eng yuqori darajadagi qulaylik va ibodat muhiti.</p>
-                    <div class="text-3xl font-bold text-brand-gold mb-6">$1650 <span
+                    <div class="text-3xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.lux_premium?.price || '1650'"></span> <span
                             class="text-sm text-gray-500 font-normal">/ dan</span></div>
                     <div class="mt-auto space-y-3">
                         <button @click="activeModal = 'lux_premium'"
@@ -333,7 +343,7 @@
                                 <div @click="activeModal = 'booking'; selectedPackage = '14 Kunlik Paket'; bookingRoom = '4 kishilik'" 
                                      class="flex justify-between items-center bg-gray-50 p-4 rounded-xl cursor-pointer hover:bg-brand-gold/10 transition-all border border-transparent hover:border-brand-gold">
                                     <span class="text-gray-600">4 kishilik xona</span>
-                                    <span class="font-bold text-brand-gold text-xl">$1390</span>
+                                    <span class="font-bold text-brand-gold text-xl">$<span x-text="packagesData.special_14day?.price || '1390'"></span></span>
                                 </div>
                                 <div @click="activeModal = 'booking'; selectedPackage = '14 Kunlik Paket'; bookingRoom = '3 kishilik'"
                                      class="flex justify-between items-center bg-gray-50 p-4 rounded-xl cursor-pointer hover:bg-brand-gold/10 transition-all border border-transparent hover:border-brand-gold">
@@ -395,7 +405,7 @@
                     </div>
                     <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
                         <p class="text-xs text-gray-500 uppercase mb-1">Boshlang'ich Narx:</p>
-                        <p class="text-3xl font-bold text-brand-gold">$1150</p>
+                        <p class="text-3xl font-bold text-brand-gold">$<span x-text="packagesData.standard?.price"></span></p>
                     </div>
                     <button @click="activeModal = 'booking'; selectedPackage = 'Standart Paket'"
                         class="block w-full bg-brand-red text-white py-4 rounded-2xl font-bold text-center hover:bg-red-800 shadow-xl transition-all">HOZIR
@@ -440,7 +450,7 @@
                     </div>
                     <div class="bg-gray-50 p-4 rounded-2xl border border-brand-gold">
                         <p class="text-xs text-gray-500 uppercase mb-1">Boshlang'ich Narx:</p>
-                        <p class="text-3xl font-bold text-brand-gold">$1300</p>
+                        <p class="text-3xl font-bold text-brand-gold">$<span x-text="packagesData.comfort?.price"></span></p>
                     </div>
                     <button @click="activeModal = 'booking'; selectedPackage = 'Komfort Paket'"
                         class="block w-full bg-brand-red text-white py-4 rounded-2xl font-bold text-center hover:bg-red-800 shadow-xl transition-all">HOZIR
@@ -983,7 +993,20 @@
                 selectedPackage: '',
                 showSuccess: false,
                 isSubmitting: false,
-                init() {
+                packagesData: {},
+                async init() {
+                    // Supabase ma'lumotlarini olish
+                    const { data: packages, error } = await supabaseClient
+                        .from('packages')
+                        .select('*');
+
+                    if (!error && packages) {
+                        this.packagesData = packages.reduce((acc, pkg) => {
+                            acc[pkg.key_name] = pkg;
+                            return acc;
+                        }, {});
+                    }
+
                     this.$watch('activeModal', value => {
                         if (!value) {
                             document.querySelectorAll('video').forEach(v => {
@@ -997,39 +1020,45 @@
                     this.lightboxImages = imgs;
                     this.lightboxIndex = index;
                 },
-                submitBooking() {
+                async submitBooking() {
                     if (document.getElementById('hp_field').value !== "") return;
-                    if(this.bookingName && this.bookingPhone && !this.isSubmitting) {
+                    
+                    // Input validation (OWASP A03:2021-Injection)
+                    const cleanName = this.bookingName.trim().replace(/[<>]/g, "");
+                    const cleanPhone = this.bookingPhone.trim().replace(/[^+0-9]/g, "");
+                    
+                    if(cleanName && cleanPhone && !this.isSubmitting) {
                         this.isSubmitting = true;
-                        const cleanName = this.bookingName.replace(/[<>]/g, "");
-                        const cleanPhone = this.bookingPhone.replace(/[<>]/g, "");
-                        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsL7MBQpvYRoPjLznfNuBR9X42wY_uqRzdov0aNe-LlpSeTB4VMkHdI7ORLPFI3z90/exec';
                         
-                        fetch(SCRIPT_URL, {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                name: cleanName,
-                                phone: cleanPhone,
-                                package: this.selectedPackage,
-                                room: this.bookingRoom
-                            })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
+                        // 1. Supabase'ga saqlash
+                        const { error } = await supabaseClient
+                            .from('leads')
+                            .insert([
+                                { 
+                                    name: cleanName, 
+                                    phone: cleanPhone, 
+                                    package: this.selectedPackage, 
+                                    room: this.bookingRoom 
+                                }
+                            ]);
+
+                        if (!error) {
                             this.isSubmitting = false;
                             this.showSuccess = true;
+                            
+                            // Botga xabar yuborish (ixtiyoriy, agar botda webhook bo'lsa)
+                            // Hozircha bazaga tushgani kifoya, admin bot orqali ko'radi
+                            
                             setTimeout(() => {
                                 this.showSuccess = false;
                                 this.activeModal = null;
                                 this.bookingName = '';
                                 this.bookingPhone = '';
                             }, 3000);
-                        })
-                        .catch(error => {
+                        } else {
                             this.isSubmitting = false;
-                            console.error('Error!', error.message);
                             alert('Xatolik yuz berdi. Iltimos qaytadan urinib ko\'ring.');
-                        });
+                        }
                     }
                 }
             }
