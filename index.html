@@ -41,14 +41,18 @@
                         hero_title: "Yangi Mavsum — <span class='gold-text'>Iyun-Iyul</span>",
                         hero_desc: "SAFO MARVA TOUR bilan — litsenziyalangan, xavfsiz va xotirjam ziyorat!",
                         hero_cta1: "PAKETLARNI KO'RISH", hero_cta2: "KONSULTATSIYA",
-                        pkg_title: "Umra Paketlari", pkg_desc: "Siz va yaqinlaringiz uchun barcha qulayliklarga ega takliflar.",
+                        pkg_title: "Umra Paketlarimiz", pkg_desc: "Siz va yaqinlaringiz uchun barcha qulayliklarga ega takliflar.",
                         '10_nights': "10 KECHALIK", details: "Batafsil", book_now: "Band qilish",
                         pkg_standard: "Standart Paket", pkg_comfort: "Komfort Paket", pkg_lux: "LUX Paket", pkg_premium: "LUX Premium",
                         popular: "Ommabop", premium: "Premium",
+                        special_title: "Eksklyuziv Taklif", special_name: "14 Kunlik \"Al Ebaa\" Komfort Paketi",
+                        special_desc: "Iyun va Iyul oylari uchun maxsus. Toshkentdan to'g'ridan-to'g'ri reyslar.",
+                        makkah_nights: "7 KECHA MAKKADA", madinah_nights: "7 KECHA MADINADA",
                         why_title: "Nega Safo Marva?",
                         why_1_title: "Litsenziyalangan", why_1_desc: "Davlat litsenziyalariga egamiz. Xavfsizlik kafolatlangan.",
                         why_2_title: "Tajribali jamoa", why_2_desc: "Ko'p yillik tajribaga ega yo'lboshchilar sizga hamrohlik qiladi.",
                         why_3_title: "Xotirjamlik", why_3_desc: "Faqat ibodat bilan band bo'lasiz, qolganini biz hal qilamiz.",
+                        gallery_title: "Ziyoratdan Lavhalar",
                         footer_desc: "Bizning maqsadimiz — sizning ibodatingizni qulay va esda qolarli qilish.",
                         book_title: "Safarga yoziling", book_subtitle: "Ma'lumotlaringizni qoldiring, menejer bog'lanadi.",
                         placeholder_name: "Ismingiz", placeholder_phone: "Telefon raqamingiz",
@@ -64,14 +68,18 @@
                         hero_title: "Новый Сезон — <span class='gold-text'>Июнь-Июль</span>",
                         hero_desc: "С SAFO MARVA TOUR — лицензированное, безопасное и спокойное паломничество!",
                         hero_cta1: "СМОТРЕТЬ ПАКЕТЫ", hero_cta2: "КОНСУЛЬТАЦИЯ",
-                        pkg_title: "Пакеты Умры", pkg_desc: "Специально разработанные предложения со всеми удобствами для вас.",
+                        pkg_title: "Наши Пакеты", pkg_desc: "Специально разработанные предложения со всеми удобствами для вас.",
                         '10_nights': "10 НОЧЕЙ", details: "Подробнее", book_now: "Забронировать",
                         pkg_standard: "Стандарт", pkg_comfort: "Комфорт", pkg_lux: "Люкс", pkg_premium: "Люкс Премиум",
                         popular: "Популярный", premium: "Премиум",
+                        special_title: "Эксклюзивное Предложение", special_name: "14-дневный пакет \"Al Ebaa\"",
+                        special_desc: "Специально на июнь и июль. Прямые рейсы из Ташкента.",
+                        makkah_nights: "7 НОЧЕЙ В МЕККЕ", madinah_nights: "7 НОЧЕЙ В МЕДИНЕ",
                         why_title: "Почему Safo Marva?",
                         why_1_title: "Лицензия", why_1_desc: "У нас есть все лицензии. Безопасность гарантирована.",
                         why_2_title: "Опытная команда", why_2_desc: "Вас будут сопровождать гиды с многолетним опытом.",
                         why_3_title: "Спокойствие", why_3_desc: "Вы занимаетесь только поклонением, остальное — на нас.",
+                        gallery_title: "Фотографии Паломничества",
                         footer_desc: "Наша цель — сделать ваше паломничество комфортным и незабываемым.",
                         book_title: "Запись на поездку", book_subtitle: "Оставьте данные, менеджер свяжется с вами.",
                         placeholder_name: "Ваше имя", placeholder_phone: "Ваш телефон",
@@ -87,14 +95,18 @@
                         hero_title: "New Season — <span class='gold-text'>June-July</span>",
                         hero_desc: "With SAFO MARVA TOUR — licensed, safe, and peaceful pilgrimage!",
                         hero_cta1: "VIEW PACKAGES", hero_cta2: "CONSULTATION",
-                        pkg_title: "Umrah Packages", pkg_desc: "Specially designed offers with all comforts for you and your family.",
+                        pkg_title: "Our Packages", pkg_desc: "Specially designed offers with all comforts for you and your family.",
                         '10_nights': "10 NIGHTS", details: "Details", book_now: "Book Now",
                         pkg_standard: "Standard", pkg_comfort: "Comfort", pkg_lux: "LUX", pkg_premium: "LUX Premium",
                         popular: "Popular", premium: "Premium",
+                        special_title: "Exclusive Offer", special_name: "14-Day \"Al Ebaa\" Comfort Package",
+                        special_desc: "Special for June and July. Direct flights from Tashkent.",
+                        makkah_nights: "7 NIGHTS IN MAKKAH", madinah_nights: "7 NIGHTS IN MADINAH",
                         why_title: "Why Safo Marva?",
                         why_1_title: "Licensed", why_1_desc: "We hold all state licenses. Your safety is our priority.",
                         why_2_title: "Expert Team", why_2_desc: "Experienced guides will accompany you throughout the journey.",
                         why_3_title: "Peace of Mind", why_3_desc: "Focus on your prayers, we handle everything else.",
+                        gallery_title: "Pilgrimage Moments",
                         footer_desc: "Our goal is to make your pilgrimage comfortable and memorable.",
                         book_title: "Book Your Journey", book_subtitle: "Leave your details, a manager will contact you.",
                         placeholder_name: "Your Name", placeholder_phone: "Your Phone",
@@ -104,30 +116,19 @@
                 },
 
                 t(key) {
-                    try {
-                        return this.translations[this.lang][key] || key;
-                    } catch (e) {
-                        return key;
-                    }
+                    try { return this.translations[this.lang][key] || key; } catch (e) { return key; }
                 },
 
                 init() {
                     this.$watch('lang', val => localStorage.setItem('site_lang', val));
                     this.fetchPrices();
-                    
                     const urlParams = new URLSearchParams(window.location.search);
                     const from = urlParams.get('from') || urlParams.get('utm_source');
-                    if (from) {
-                        this.source = from;
-                        localStorage.setItem('lead_source', from);
-                    } else {
-                        this.source = localStorage.getItem('lead_source') || 'togriga';
-                    }
+                    this.source = from || localStorage.getItem('lead_source') || 'togriga';
+                    if (from) localStorage.setItem('lead_source', from);
 
                     const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) entry.target.classList.add('active');
-                        });
+                        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
                     }, { threshold: 0.1 });
                     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
                 },
@@ -135,75 +136,43 @@
                 async fetchPrices() {
                     try {
                         const { data } = await supabaseClient.from('packages').select('*');
-                        if (data) {
-                            data.forEach(pkg => {
-                                this.packagesData[pkg.key_name] = pkg;
-                            });
-                        }
+                        if (data) data.forEach(pkg => { this.packagesData[pkg.key_name] = pkg; });
                     } catch (e) { console.error(e); }
                 },
 
                 async submitBooking() {
                     if (document.getElementById('hp_field').value !== "") return;
-                    
                     const cleanName = this.bookingName.trim();
                     const cleanPhone = this.bookingPhone.trim().replace(/[^+0-9]/g, "");
-                    
-                    if (!cleanName || !cleanPhone) {
-                        alert("Iltimos, ma'lumotlarni to'ldiring.");
-                        return;
-                    }
-
+                    if (!cleanName || !cleanPhone) { alert("Iltimos, ma'lumotlarni to'ldiring."); return; }
                     if(!this.isSubmitting) {
                         this.isSubmitting = true;
                         try {
-                            const { error } = await supabaseClient
-                                .from('leads')
-                                .insert([{ 
-                                    name: cleanName, 
-                                    phone: cleanPhone, 
-                                    package: this.selectedPackage, 
-                                    room: this.bookingRoom,
-                                    source: this.source 
-                                }]);
-                            
+                            const { error } = await supabaseClient.from('leads').insert([{ 
+                                name: cleanName, phone: cleanPhone, package: this.selectedPackage, 
+                                room: this.bookingRoom, source: this.source 
+                            }]);
                             if (error) throw error;
                             this.showSuccess = true;
-                            setTimeout(() => {
-                                this.activeModal = null;
-                                this.showSuccess = false;
-                                this.bookingName = '';
-                                this.bookingPhone = '';
-                            }, 3000);
-                        } catch (err) {
-                            alert("Error! Please try again.");
-                        } finally {
-                            this.isSubmitting = false;
-                        }
+                            setTimeout(() => { this.activeModal = null; this.showSuccess = false; this.bookingName = ''; this.bookingPhone = ''; }, 3000);
+                        } catch (err) { alert("Error! Please try again."); } finally { this.isSubmitting = false; }
                     }
                 }
             }
         }
     </script>
 
-    <!-- Dynamic SEO -->
-    <title x-text="t('site_title')">Safo Marva Tour</title>
+    <title x-text="t('site_title')"></title>
     <meta name="description" :content="t('site_desc')">
     <meta name="keywords" :content="t('site_keywords')">
-    
     <link rel="icon" type="image/png" href="safo_marva.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        brand: { red: '#8B0000', gold: '#D4AF37', dark: '#1a1a1a' }
-                    },
-                    fontFamily: {
-                        sans: ['Montserrat', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    }
+                    colors: { brand: { red: '#8B0000', gold: '#D4AF37', dark: '#1a1a1a' } },
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
                 }
             }
         }
@@ -230,27 +199,21 @@
                 <img src="safo_marva.png" alt="Logo" class="h-10 w-auto mr-3 rounded-lg">
                 <span class="text-white font-bold text-lg tracking-wider hidden md:block uppercase">SAFO MARVA TOUR</span>
             </div>
-
             <div class="hidden lg:flex items-center space-x-6">
                 <a href="#packages" class="text-white hover:text-brand-gold transition-colors text-xs font-medium uppercase tracking-widest" x-text="t('nav_packages')"></a>
                 <a href="#why-choose" class="text-white hover:text-brand-gold transition-colors text-xs font-medium uppercase tracking-widest" x-text="t('nav_why')"></a>
                 <a href="#gallery" class="text-white hover:text-brand-gold transition-colors text-xs font-medium uppercase tracking-widest" x-text="t('nav_gallery')"></a>
             </div>
-
             <div class="flex items-center space-x-4">
                 <div class="flex bg-black/20 rounded-full p-1 text-[10px] font-bold text-white">
                     <button @click="lang = 'uz'" :class="lang === 'uz' ? 'bg-brand-gold text-brand-red' : ''" class="px-2 py-1 rounded-full transition-all">UZ</button>
                     <button @click="lang = 'ru'" :class="lang === 'ru' ? 'bg-brand-gold text-brand-red' : ''" class="px-2 py-1 rounded-full transition-all">RU</button>
                     <button @click="lang = 'en'" :class="lang === 'en' ? 'bg-brand-gold text-brand-red' : ''" class="px-2 py-1 rounded-full transition-all">EN</button>
                 </div>
-                
-                <div class="hidden sm:flex flex-col text-right">
-                    <a href="tel:+998555177373" class="text-white font-bold text-xs">+998 55 517 73 73</a>
-                </div>
+                <div class="hidden sm:flex flex-col text-right text-white font-bold text-xs"><a href="tel:+998555177373">+998 55 517 73 73</a></div>
                 <button @click="mobileMenu = !mobileMenu" class="lg:hidden text-white"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></button>
             </div>
         </div>
-        
         <div x-show="mobileMenu" x-cloak class="lg:hidden bg-brand-red p-6 space-y-4 text-center text-white" x-transition>
             <a href="#packages" @click="mobileMenu = false" class="block text-sm uppercase" x-text="t('nav_packages')"></a>
             <a href="#why-choose" @click="mobileMenu = false" class="block text-sm uppercase" x-text="t('nav_why')"></a>
@@ -279,7 +242,6 @@
                 <div class="w-16 h-1 bg-brand-gold mx-auto mb-4"></div>
                 <p class="text-gray-500 text-sm max-w-xl mx-auto" x-text="t('pkg_desc')"></p>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
                 <!-- Standard -->
                 <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-xl hover:shadow-2xl transition-all flex flex-col">
@@ -287,67 +249,117 @@
                     <h3 class="text-lg font-bold mb-3 uppercase" x-text="t('pkg_standard')"></h3>
                     <div class="text-2xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.standard?.price || '1150'"></span></div>
                     <div class="mt-auto space-y-2">
-                        <button @click="activeModal = 'standard'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold hover:bg-gray-100" x-text="t('details')"></button>
-                        <button @click="activeModal = 'booking'; selectedPackage = t('pkg_standard')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold hover:bg-red-800" x-text="t('book_now')"></button>
+                        <button @click="activeModal = 'standard'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold" x-text="t('details')"></button>
+                        <button @click="activeModal = 'booking'; selectedPackage = t('pkg_standard')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold" x-text="t('book_now')"></button>
                     </div>
                 </div>
                 <!-- Comfort -->
-                <div class="bg-white rounded-3xl border-2 border-brand-gold p-6 shadow-2xl transition-all flex flex-col relative scale-105 z-10">
+                <div class="bg-white rounded-3xl border-2 border-brand-gold p-6 shadow-2xl flex flex-col relative scale-105 z-10">
                     <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-gold text-white px-3 py-1 rounded-full text-[8px] font-bold uppercase" x-text="t('popular')"></div>
                     <span class="text-brand-red font-bold text-[10px] tracking-widest uppercase mb-2" x-text="t('10_nights')"></span>
                     <h3 class="text-lg font-bold mb-3 uppercase" x-text="t('pkg_comfort')"></h3>
                     <div class="text-2xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.comfort?.price || '1300'"></span></div>
                     <div class="mt-auto space-y-2">
-                        <button @click="activeModal = 'comfort'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold hover:bg-gray-100" x-text="t('details')"></button>
-                        <button @click="activeModal = 'booking'; selectedPackage = t('pkg_comfort')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold hover:bg-red-800" x-text="t('book_now')"></button>
+                        <button @click="activeModal = 'comfort'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold" x-text="t('details')"></button>
+                        <button @click="activeModal = 'booking'; selectedPackage = t('pkg_comfort')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold" x-text="t('book_now')"></button>
                     </div>
                 </div>
                 <!-- LUX -->
-                <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-xl hover:shadow-2xl transition-all flex flex-col">
+                <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-xl flex flex-col">
                     <span class="text-brand-red font-bold text-[10px] tracking-widest uppercase mb-2" x-text="t('10_nights')"></span>
                     <h3 class="text-lg font-bold mb-3 uppercase" x-text="t('pkg_lux')"></h3>
                     <div class="text-2xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.lux?.price || '1550'"></span></div>
                     <div class="mt-auto space-y-2">
-                        <button @click="activeModal = 'lux'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold hover:bg-gray-100" x-text="t('details')"></button>
-                        <button @click="activeModal = 'booking'; selectedPackage = t('pkg_lux')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold hover:bg-red-800" x-text="t('book_now')"></button>
+                        <button @click="activeModal = 'lux'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold" x-text="t('details')"></button>
+                        <button @click="activeModal = 'booking'; selectedPackage = t('pkg_lux')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold" x-text="t('book_now')"></button>
                     </div>
                 </div>
                 <!-- Premium -->
-                <div class="bg-brand-dark rounded-3xl p-6 shadow-xl transition-all flex flex-col text-white">
+                <div class="bg-brand-dark rounded-3xl p-6 shadow-xl flex flex-col text-white">
                     <span class="text-brand-gold font-bold text-[10px] tracking-widest uppercase mb-2" x-text="t('premium')"></span>
                     <h3 class="text-lg font-bold mb-3 uppercase" x-text="t('pkg_premium')"></h3>
                     <div class="text-2xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.lux_premium?.price || '1650'"></span></div>
                     <div class="mt-auto space-y-2">
-                        <button @click="activeModal = 'lux_premium'" class="w-full bg-gray-800 text-white py-3 rounded-2xl text-xs font-bold border border-gray-700 hover:bg-gray-700" x-text="t('details')"></button>
-                        <button @click="activeModal = 'booking'; selectedPackage = t('pkg_premium')" class="w-full bg-brand-gold text-brand-red py-3 rounded-2xl text-xs font-bold hover:bg-yellow-600" x-text="t('book_now')"></button>
+                        <button @click="activeModal = 'lux_premium'" class="w-full bg-gray-800 text-white py-3 rounded-2xl text-xs font-bold border border-gray-700" x-text="t('details')"></button>
+                        <button @click="activeModal = 'booking'; selectedPackage = t('pkg_premium')" class="w-full bg-brand-gold text-brand-red py-3 rounded-2xl text-xs font-bold" x-text="t('book_now')"></button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- 14-Day Special Section (Al Ebaa) -->
+    <section class="py-20 bg-gray-100 reveal">
+        <div class="container mx-auto px-6">
+            <div class="bg-brand-red rounded-[2.5rem] shadow-3xl overflow-hidden flex flex-col lg:flex-row">
+                <div class="lg:w-5/12 p-12 text-white flex flex-col justify-center">
+                    <h2 class="text-brand-gold font-bold tracking-[0.2em] mb-4 uppercase text-[10px]" x-text="t('special_title')"></h2>
+                    <h3 class="text-3xl md:text-4xl font-serif mb-6 leading-tight" x-text="t('special_name')"></h3>
+                    <p class="text-red-100 text-sm mb-8 leading-relaxed" x-text="t('special_desc')"></p>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="bg-red-900/50 p-4 rounded-2xl border border-red-800 text-center">
+                            <p class="text-[10px] text-red-200 uppercase" x-text="t('makkah_nights')"></p>
+                        </div>
+                        <div class="bg-red-900/50 p-4 rounded-2xl border border-red-800 text-center">
+                            <p class="text-[10px] text-red-200 uppercase" x-text="t('madinah_nights')"></p>
+                        </div>
+                    </div>
+                    <button @click="activeModal = 'booking'; selectedPackage = t('special_name')" class="bg-white text-brand-red py-4 rounded-2xl font-bold text-sm hover:bg-brand-gold hover:text-white transition-all shadow-xl" x-text="t('book_now')"></button>
+                </div>
+                <div class="lg:w-7/12 bg-white p-12 flex items-center justify-center">
+                    <img src="galereya/Al%20EBAA/IMG_6465.MP4" class="hidden"> <!-- Hidden but logic helper -->
+                    <video controls class="rounded-3xl shadow-2xl w-full max-w-lg aspect-video object-cover">
+                        <source src="galereya/Al%20EBAA/IMG_6465.MP4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Why Choose Us -->
-    <section id="why-choose" class="py-20 bg-gray-50 reveal">
+    <section id="why-choose" class="py-20 bg-white reveal">
         <div class="container mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-serif text-brand-red mb-4" x-text="t('why_title')"></h2>
                 <div class="w-16 h-1 bg-brand-gold mx-auto"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="text-center p-8 rounded-3xl bg-white shadow-sm border border-gray-100 hover:border-brand-gold transition-all">
+                <div class="text-center p-8 rounded-3xl bg-gray-50 border border-transparent hover:border-brand-gold transition-all">
                     <div class="text-3xl mb-4">📜</div>
                     <h4 class="text-sm font-bold mb-3 uppercase" x-text="t('why_1_title')"></h4>
                     <p class="text-gray-500 text-xs" x-text="t('why_1_desc')"></p>
                 </div>
-                <div class="text-center p-8 rounded-3xl bg-white shadow-sm border border-gray-100 hover:border-brand-gold transition-all">
+                <div class="text-center p-8 rounded-3xl bg-gray-50 border border-transparent hover:border-brand-gold transition-all">
                     <div class="text-3xl mb-4">🕋</div>
                     <h4 class="text-sm font-bold mb-3 uppercase" x-text="t('why_2_title')"></h4>
                     <p class="text-gray-500 text-xs" x-text="t('why_2_desc')"></p>
                 </div>
-                <div class="text-center p-8 rounded-3xl bg-white shadow-sm border border-gray-100 hover:border-brand-gold transition-all">
+                <div class="text-center p-8 rounded-3xl bg-gray-50 border border-transparent hover:border-brand-gold transition-all">
                     <div class="text-3xl mb-4">🛡️</div>
                     <h4 class="text-sm font-bold mb-3 uppercase" x-text="t('why_3_title')"></h4>
                     <p class="text-gray-500 text-xs" x-text="t('why_3_desc')"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-brand-dark text-white overflow-hidden">
+        <div class="container mx-auto px-6 mb-12 text-center">
+            <h2 class="text-3xl font-serif text-brand-gold mb-4" x-text="t('gallery_title')"></h2>
+            <div class="w-16 h-1 bg-brand-gold mx-auto"></div>
+        </div>
+        <div class="relative overflow-hidden">
+            <div class="marquee-container flex space-x-6 px-6">
+                <div class="flex space-x-6 flex-shrink-0">
+                    <img src="galereya/image.png" class="h-60 w-96 object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy.png" class="h-60 w-96 object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 2.png" class="h-60 w-96 object-cover rounded-3xl shadow-2xl">
+                </div>
+                <div class="flex space-x-6 flex-shrink-0">
+                    <img src="galereya/image.png" class="h-60 w-96 object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy.png" class="h-60 w-96 object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 2.png" class="h-60 w-96 object-cover rounded-3xl shadow-2xl">
                 </div>
             </div>
         </div>
@@ -361,7 +373,6 @@
             <div class="flex justify-center space-x-6 mb-8 text-xs text-brand-gold">
                 <a href="tel:+998555177373">+998 55 517 73 73</a>
                 <a href="https://t.me/safomarvatour">Telegram</a>
-                <a href="https://instagram.com/safomarvatour">Instagram</a>
             </div>
             <p class="text-[10px] text-gray-600">&copy; 2026 Safo Marva Tour. All rights reserved.</p>
         </div>
@@ -381,8 +392,7 @@
                     <span x-text="selectedPackage"></span>
                 </div>
                 <input type="text" id="hp_field" class="hidden" value="">
-                
-                <button @click="submitBooking()" :disabled="isSubmitting" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold text-sm shadow-xl hover:bg-red-800 disabled:opacity-50 flex justify-center items-center">
+                <button @click="submitBooking()" :disabled="isSubmitting" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold text-sm shadow-xl flex justify-center">
                     <span x-show="!isSubmitting" x-text="t('submit')"></span>
                     <span x-show="isSubmitting" class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
                 </button>
