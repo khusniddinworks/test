@@ -1022,41 +1022,46 @@
                 async submitBooking() {
                     if (document.getElementById('hp_field').value !== "") return;
                     
-                    // Input validation (OWASP A03:2021-Injection)
                     const cleanName = this.bookingName.trim().replace(/[<>]/g, "");
                     const cleanPhone = this.bookingPhone.trim().replace(/[^+0-9]/g, "");
                     
-                    if(cleanName && cleanPhone && !this.isSubmitting) {
-                        this.isSubmitting = true;
-                        
-                        // 1. Supabase'ga saqlash
-                        const { error } = await supabaseClient
-                            .from('leads')
-                            .insert([
-                                { 
-                                    name: cleanName, 
-                                    phone: cleanPhone, 
-                                    package: this.selectedPackage, 
-                                    room: this.bookingRoom 
-                                }
-                            ]);
+                    if (!cleanName) {
+                        alert("Iltimos, ismingizni kiriting.");
+                        return;
+                    }
+                    if (!cleanPhone) {
+                        alert("Iltimos, telefon raqamingizni to'g'ri kiriting (faqat raqamlar).");
+                        return;
+                    }
 
-                        if (!error) {
-                            this.isSubmitting = false;
+                    if(!this.isSubmitting) {
+                        this.isSubmitting = true;
+                        try {
+                            const { error } = await supabaseClient
+                                .from('leads')
+                                .insert([
+                                    { 
+                                        name: cleanName, 
+                                        phone: cleanPhone, 
+                                        package: this.selectedPackage, 
+                                        room: this.bookingRoom 
+                                    }
+                                ]);
+                            
+                            if (error) throw error;
+                            
                             this.showSuccess = true;
-                            
-                            // Botga xabar yuborish (ixtiyoriy, agar botda webhook bo'lsa)
-                            // Hozircha bazaga tushgani kifoya, admin bot orqali ko'radi
-                            
                             setTimeout(() => {
-                                this.showSuccess = false;
                                 this.activeModal = null;
+                                this.showSuccess = false;
                                 this.bookingName = '';
                                 this.bookingPhone = '';
                             }, 3000);
-                        } else {
+                        } catch (err) {
+                            console.error(err);
+                            alert("Xatolik yuz berdi. Iltimos qaytadan urinib ko'ring.");
+                        } finally {
                             this.isSubmitting = false;
-                            alert('Xatolik yuz berdi. Iltimos qaytadan urinib ko\'ring.');
                         }
                     }
                 }

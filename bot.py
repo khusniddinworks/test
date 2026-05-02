@@ -25,75 +25,85 @@ dp = Dispatcher()
 class AdminState(StatesGroup):
     waiting_for_price = State()
     waiting_for_admin_id = State()
+    waiting_for_admin_role = State()
 
 # --- ADMINLARNI TEKSHIRISH ---
 async def get_admin_role(user_id):
-    if user_id == SUPER_MANAGER_ID: return "manager"
+    if user_id == SUPER_MANAGER_ID: return "super_manager"
     res = supabase.table("admins").select("role").eq("id", user_id).execute()
     return res.data[0]['role'] if res.data else None
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     role = await get_admin_role(message.from_user.id)
-    if role == "manager":
-        kb = [
-            [types.KeyboardButton(text="💰 Narxlarni o'zgartirish")],
-            [types.KeyboardButton(text="👤 Menejerlarni boshqarish")],
-            [types.KeyboardButton(text="📊 Leadlarni ko'rish")]
-        ]
+    if role in ["super_manager", "manager"]:
+        kb = [[types.KeyboardButton(text="💰 Narxlarni o'zgartirish")]]
+        if role == "super_manager":
+            kb.append([types.KeyboardButton(text="👤 Adminlarni boshqarish")])
         keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
-        await message.answer("Xush kelibsiz Manager!", reply_markup=keyboard)
+        await message.answer(f"Xush kelibsiz {role.replace('_', ' ').capitalize()}!", reply_markup=keyboard)
     elif role == "lead_admin":
         await message.answer("Xush kelibsiz Lead Admin! Yangi murojaatlar sizga avtomatik keladi.")
     else:
         await message.answer(f"Sizning ID: {message.from_user.id}\nRuxsat yo'q.")
 
-# --- MENEJERLARNI BOSHQARISH (Faqat Manager uchun) ---
-@dp.message(F.text == "👤 Menejerlarni boshqarish")
+# --- ADMINLARNI BOSHQARISH (Faqat Super Manager uchun) ---
+@dp.message(F.text == "👤 Adminlarni boshqarish")
 async def manage_admins(message: types.Message):
-    if await get_admin_role(message.from_user.id) != "manager": return
-    res = supabase.table("admins").select("*").eq("role", "lead_admin").execute()
+    if await get_admin_role(message.from_user.id) != "super_manager": return
+    res = supabase.table("admins").select("*").execute()
     admins = res.data
-    text = "Hozirgi menejerlar:\n"
+    text = "Hozirgi xodimlar:\n"
     kb = []
     for a in admins:
-        text += f"- ID: {a['id']}\n"
-        kb.append([types.InlineKeyboardButton(text=f"❌ O'chirish {a['id']}", callback_data=f"del_admin:{a['id']}")])
-    kb.append([types.InlineKeyboardButton(text="➕ Menejer qo'shish", callback_data="add_admin")])
+        role_label = "Menejer (Lead)" if a['role'] == "lead_admin" else "Manager (Narx)"
+        text += f"- ID: {a['id']} ({role_label})\n"
+        kb.append([types.InlineKeyboardButton(text=f"❌ Lavozimdan ozod qilish {a['id']}", callback_data=f"del_admin:{a['id']}")])
+    kb.append([types.InlineKeyboardButton(text="➕ Yangi xodim qo'shish", callback_data="add_admin")])
     await message.answer(text, reply_markup=types.InlineKeyboardMarkup(inline_keyboard=kb))
 
 @dp.callback_query(F.data == "add_admin")
 async def ask_admin_id(callback: types.CallbackQuery, state: FSMContext):
-    await callback.message.answer("Yangi menejerning Telegram ID raqamini kiriting:")
+    await callback.message.answer("Yangi xodimning Telegram ID raqamini kiriting:")
     await state.set_state(AdminState.waiting_for_admin_id)
 
 @dp.message(AdminState.waiting_for_admin_id)
-async def process_add_admin(message: types.Message, state: FSMContext):
+async def ask_admin_role(message: types.Message, state: FSMContext):
     if not message.text.isdigit():
         await message.answer("Faqat raqam kiriting!")
         return
-    admin_id = int(message.text)
+    await state.update_data(new_admin_id=int(message.text))
+    kb = [
+        [types.InlineKeyboardButton(text="📞 Lead Admin (Faqat lead oladi)", callback_data="set_role:lead_admin")],
+        [types.InlineKeyboardButton(text="💰 Manager (Faqat narx o'zgartiradi)", callback_data="set_role:manager")]
+    ]
+    await message.answer("Lavozimni tanlang:", reply_markup=types.InlineKeyboardMarkup(inline_keyboard=kb))
+    await state.set_state(AdminState.waiting_for_admin_role)
+
+@dp.callback_query(F.data.startswith("set_role:"), AdminState.waiting_for_admin_role)
+async def process_add_admin(callback: types.CallbackQuery, state: FSMContext):
+    role = callback.data.split(":")[1]
+    data = await state.get_data()
+    admin_id = data['new_admin_id']
     try:
-        supabase.table("admins").insert({"id": admin_id, "role": "lead_admin"}).execute()
-        await message.answer(f"✅ Menejer (ID: {admin_id}) muvaffaqiyatli qo'shildi.")
+        supabase.table("admins").insert({"id": admin_id, "role": role}).execute()
+        await callback.message.answer(f"✅ Xodim (ID: {admin_id}) {role} lavozimiga tayinlandi.")
     except Exception as e:
-        if "duplicate key" in str(e):
-            await message.answer(f"⚠️ Bu menejer (ID: {admin_id}) allaqachon bazada mavjud.")
-        else:
-            await message.answer(f"❌ Xatolik yuz berdi: {e}")
+        await callback.message.answer(f"❌ Xatolik: {e}")
     await state.clear()
 
 @dp.callback_query(F.data.startswith("del_admin:"))
 async def process_del_admin(callback: types.CallbackQuery):
+    if await get_admin_role(callback.from_user.id) != "super_manager": return
     admin_id = int(callback.data.split(":")[1])
     supabase.table("admins").delete().eq("id", admin_id).execute()
-    await callback.answer("O'chirildi")
-    await callback.message.answer(f"✅ Menejer (ID: {admin_id}) o'chirildi.")
+    await callback.message.answer(f"✅ Xodim (ID: {admin_id}) lavozimidan ozod qilindi.")
 
-# --- NARXLARNI O'ZGARTIRISH ---
+# --- NARXLARNI O'ZGARTIRISH (Faqat Manager va Super Manager uchun) ---
 @dp.message(F.text == "💰 Narxlarni o'zgartirish")
 async def show_packages(message: types.Message):
-    if await get_admin_role(message.from_user.id) != "manager": return
+    role = await get_admin_role(message.from_user.id)
+    if role not in ["super_manager", "manager"]: return
     res = supabase.table("packages").select("*").execute()
     kb = [[types.InlineKeyboardButton(text=f"{p['display_name']} (${p['price']})", callback_data=f"edit:{p['key_name']}")] for p in res.data]
     await message.answer("Paketni tanlang:", reply_markup=types.InlineKeyboardMarkup(inline_keyboard=kb))
@@ -109,7 +119,7 @@ async def update_price(message: types.Message, state: FSMContext):
     if not message.text.isdigit(): return
     data = await state.get_data()
     supabase.table("packages").update({"price": message.text}).eq("key_name", data['pkg_key']).execute()
-    await message.answer("✅ Narx o'zgardi.")
+    await message.answer("✅ Saytda narx o'zgardi.")
     await state.clear()
 
 # --- LEADLARNI TEKSHIRISH ---
@@ -122,12 +132,12 @@ async def check_leads():
         try:
             new_leads = supabase.table("leads").select("*").gt("id", last_id).execute()
             if new_leads.data:
-                # Barcha Lead Adminlarni olamiz
+                # FAQAT Lead Adminlarni olamiz
                 admins = supabase.table("admins").select("id").eq("role", "lead_admin").execute()
                 admin_ids = [a['id'] for a in admins.data]
                 
                 for lead in new_leads.data:
-                    text = f"🔔 YANGI LEAD!\n👤 {lead['name']}\n📞 {lead['phone']}\n📦 {lead['package']}"
+                    text = f"🔔 YANGI MUROJAAT!\n👤 {lead['name']}\n📞 {lead['phone']}\n📦 {lead['package']}"
                     for aid in admin_ids:
                         try: await bot.send_message(chat_id=aid, text=text)
                         except: pass
