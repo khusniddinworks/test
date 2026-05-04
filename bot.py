@@ -155,6 +155,57 @@ async def process_status(callback: types.CallbackQuery):
         await callback.answer(f"Status yangilandi: {status_map[status]}")
         await callback.message.edit_text(callback.message.text + f"\n\n📍 STATUS: {status_map[status]}")
 
+# --- HAFTALIK HISOBOT ---
+async def send_weekly_report():
+    if not supabase: return
+    now = datetime.datetime.now(UZB_TZ)
+    week_ago = (now - timedelta(days=7)).isoformat()
+    
+    res = supabase.table("leads").select("*").gte("created_at", week_ago).execute()
+    leads = res.data
+    
+    super_id = int(os.getenv("MANAGER_ADMIN_ID", 0))
+    if not leads:
+        await bot.send_message(chat_id=super_id, text="📊 Bu hafta murojaatlar tushmadi.")
+        return
+    
+    total = len(leads)
+    done = len([l for l in leads if l.get('status') == 'done'])
+    wait = len([l for l in leads if l.get('status') == 'wait'])
+    cancel = len([l for l in leads if l.get('status') == 'cancel'])
+    yangi = len([l for l in leads if l.get('status') in ('yangi', None, '')])
+    
+    sources = {}
+    for l in leads:
+        src = l.get('source', 'togriga')
+        sources[src] = sources.get(src, 0) + 1
+    
+    src_text = "\n".join([f"🔹 {k.capitalize()}: {v} ta" for k, v in sources.items()])
+    
+    report = (f"📊 **HAFTALIK HISOBOT**\n"
+              f"📅 {week_ago[:10]} dan boshlab\n\n"
+              f"📥 Jami murojaatlar: {total} ta\n"
+              f"━━━━━━━━━━━━━━━\n"
+              f"✅ Bog'lanilgan: {done}\n"
+              f"⌛ O'ylayapti: {wait}\n"
+              f"❌ Rad etilgan: {cancel}\n"
+              f"🆕 Hali ochilmagan: {yangi}\n\n"
+              f"🌍 **MANBALAR:**\n{src_text}")
+    
+    try:
+        await bot.send_message(chat_id=super_id, text=report)
+    except Exception as e:
+        logging.error(f"Hisobot yuborishda xatolik: {e}")
+
+async def scheduler():
+    while True:
+        now = datetime.datetime.now(UZB_TZ)
+        # Shanba (5) soat 16:00 O'zbekiston vaqti
+        if now.weekday() == 5 and now.hour == 16 and now.minute == 0:
+            await send_weekly_report()
+            await asyncio.sleep(60)  # Ikki marta yubormasligi uchun
+        await asyncio.sleep(30)
+
 # --- LEAD CHECK ---
 async def check_leads():
     last_id = 0
@@ -214,6 +265,7 @@ async def main():
 
     # 3. Fon vazifalarini boshlash
     asyncio.create_task(check_leads())
+    asyncio.create_task(scheduler())
     
     # 4. Polling boshlash
     await dp.start_polling(bot)
