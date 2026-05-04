@@ -100,7 +100,8 @@
                         copyright: "Barcha huquqlar himoyalangan.",
                         hotels_title: "Mehmonxonalar:",
                         madinah_hotel: "Mehrob Toiba (7 kecha)",
-                        makkah_hotel: "Al Ebaa Hotel (7 kecha)"
+                        makkah_hotel: "Al Ebaa Hotel (7 kecha)",
+                        room_type_select: "Xona turini tanlang:"
                     },
                     ru: {
                         site_title: "Safo Marva Tour - Умра 2026",
@@ -150,7 +151,8 @@
                         copyright: "Все права защищены.",
                         hotels_title: "Отели:",
                         madinah_hotel: "Мехроб Тойба (7 ночей)",
-                        makkah_hotel: "Al Ebaa Hotel (7 ночей)"
+                        makkah_hotel: "Al Ebaa Hotel (7 ночей)",
+                        room_type_select: "Выберите тип номера:"
                     },
                     en: {
                         site_title: "Safo Marva Tour - Umrah 2026",
@@ -200,7 +202,8 @@
                         copyright: "All rights reserved.",
                         hotels_title: "Hotels:",
                         madinah_hotel: "Mehrob Toiba (7 nights)",
-                        makkah_hotel: "Al Ebaa Hotel (7 nights)"
+                        makkah_hotel: "Al Ebaa Hotel (7 nights)",
+                        room_type_select: "Select room type:"
                     }
                 },
 
@@ -696,6 +699,17 @@
                 <div class="bg-brand-red/5 p-4 rounded-xl text-xs text-brand-red font-bold flex justify-between">
                     <span x-text="t('selected')"></span><span x-text="selectedPackage"></span>
                 </div>
+
+                <!-- Room selection ONLY for 14-day package -->
+                <div x-show="selectedPackage.includes('14') || selectedPackage === t('special_name')" x-transition class="space-y-3">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-1" x-text="t('room_type_select')"></label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button @click="bookingRoom = t('room_2')" :class="bookingRoom === t('room_2') ? 'bg-brand-gold text-brand-red border-brand-gold' : 'bg-gray-50 text-gray-600 border-transparent'" class="py-3 rounded-xl text-[10px] font-bold border-2 transition-all" x-text="t('room_2')"></button>
+                        <button @click="bookingRoom = t('room_3')" :class="bookingRoom === t('room_3') ? 'bg-brand-gold text-brand-red border-brand-gold' : 'bg-gray-50 text-gray-600 border-transparent'" class="py-3 rounded-xl text-[10px] font-bold border-2 transition-all" x-text="t('room_3')"></button>
+                        <button @click="bookingRoom = t('room_4')" :class="bookingRoom === t('room_4') ? 'bg-brand-gold text-brand-red border-brand-gold' : 'bg-gray-50 text-gray-600 border-transparent'" class="py-3 rounded-xl text-[10px] font-bold border-2 transition-all" x-text="t('room_4')"></button>
+                    </div>
+                </div>
+
                 <input type="text" id="hp_field" class="hidden" value="" tabindex="-1" autocomplete="off">
                 <p x-show="validationErrors.submit" x-text="validationErrors.submit" class="text-red-500 text-xs text-center" x-transition></p>
                 <button @click="submitBooking()" :disabled="isSubmitting" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold text-sm shadow-xl flex justify-center hover:bg-red-800 transition-all focus:outline-none focus:ring-2 focus:ring-brand-gold" aria-label="Submit booking">
