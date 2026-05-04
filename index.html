@@ -1,14 +1,33 @@
 <!DOCTYPE html>
-<html :lang="lang" class="scroll-smooth" x-data="tourApp()">
+<html lang="uz" :lang="lang" class="scroll-smooth" x-data="tourApp()">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://hddpzctigsjqljtooogq.supabase.co https://*.supabase.co;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- SEO: Static fallback meta tags (Google botlari uchun) -->
+    <title>Safo Marva Tour - Umra Ziyorati 2026</title>
+    <meta name="description" content="O'zbekistondagi ishonchli Umra va Haj sayohat agentligi. Iyun va iyul oylari uchun maxsus paketlar.">
+    <meta name="keywords" content="Umra 2026, Safo Marva, Haj, Saudiya Arabistoni, Toshkent Umra, Umrah tour">
+    
+    <!-- Open Graph (Facebook, Telegram) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Safo Marva Tour - Umra Ziyorati 2026">
+    <meta property="og:description" content="O'zbekistondagi ishonchli Umra va Haj sayohat agentligi. Iyun va iyul oylari uchun maxsus paketlar.">
+    <meta property="og:image" content="safo_marva.png">
+    <meta property="og:url" content="https://safomarvatour.uz">
+    <meta property="og:locale" content="uz_UZ">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Safo Marva Tour - Umra 2026">
+    <meta name="twitter:description" content="Litsenziyalangan Umra va Haj agentligi. Maxsus paketlar.">
+    <meta name="twitter:image" content="safo_marva.png">
+    
+    <script defer src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -30,6 +49,7 @@
                 showSuccess: false,
                 source: 'togriga',
                 packagesData: {},
+                pricesLoaded: false,
                 
                 translations: {
                     uz: {
@@ -50,7 +70,7 @@
                         makkah: "Makkada", madinah: "Madinada", nights_7: "7 KECHA",
                         services_title: "Xizmatlarimiz", prices_title: "Narxlar",
                         room_4: "4 kishilik xona", room_3: "3 kishilik xona", room_2: "2 kishilik xona",
-                        srv_1: "Aviachiptalar (Toshkent-Madina-Toshkent)", srv_2: "Viza va Sug'urta xizmati", srv_3: "Madina-Makka Tezyurar poezd",
+                        srv_1: "Aviachiptalar (Toshkent-Madina-Toshkent)", srv_2: "Viza xizmati", srv_3: "Madina-Makka Tezyurar poezd",
                         srv_4: "2 mahal mazali taomlar", srv_5: "Malakali yo'lboshchi va shifokor",
                         why_title: "Nega Safo Marva?",
                         why_1_title: "Litsenziyalangan", why_1_desc: "Davlat litsenziyalariga egamiz. Xavfsizlik kafolatlangan.",
@@ -64,7 +84,23 @@
                         success_title: "Qabul qilindi!", success_desc: "Menejerimiz tez orada bog'lanadi.",
                         modal_std: "Standart Paket Tafsilotlari", modal_com: "Komfort Paket Tafsilotlari",
                         modal_lux: "LUX Paket Tafsilotlari", modal_prem: "LUX Premium Tafsilotlari",
-                        modal_14: "14 Kunlik Paket Tafsilotlari"
+                        modal_14: "14 Kunlik Paket Tafsilotlari",
+                        srv_insurance: "To'liq sug'urta xizmati",
+                        srv_transport_bus: "Transport: Zamonaviy avtobuslar",
+                        srv_zamzam: "Muborak Zam-Zam suvi (5L)",
+                        srv_tours: "Muqaddas qadamjolarga ekskursiyalar",
+                        srv_near_haram: "Haramga juda yaqin masofa",
+                        srv_vip: "VIP Servis va doimiy yordam",
+                        srv_vip_transfer: "Aeroportdan VIP transfer",
+                        srv_vip_group: "Maxsus VIP guruh",
+                        srv_buffet: "Taomlar: Shved stoli",
+                        err_name: "Ismingizni kiriting (kamida 2 harf)",
+                        err_phone: "To'g'ri telefon raqam kiriting",
+                        err_submit: "Xatolik! Qayta urinib ko'ring.",
+                        copyright: "Barcha huquqlar himoyalangan.",
+                        hotels_title: "Mehmonxonalar:",
+                        madinah_hotel: "Mehrob Toiba (7 kecha)",
+                        makkah_hotel: "Al Ebaa Hotel (7 kecha)"
                     },
                     ru: {
                         site_title: "Safo Marva Tour - Умра 2026",
@@ -98,7 +134,23 @@
                         success_title: "Принято!", success_desc: "Менеджер свяжется с вами в ближайшее время.",
                         modal_std: "Детали Стандартного пакета", modal_com: "Детали Комфортного пакета",
                         modal_lux: "Детали Люкс пакета", modal_prem: "Детали Люкс Премиум пакета",
-                        modal_14: "Детали 14-дневного пакета"
+                        modal_14: "Детали 14-дневного пакета",
+                        srv_insurance: "Страховка на весь период",
+                        srv_transport_bus: "Транспорт: Современные автобусы",
+                        srv_zamzam: "Святая вода Зам-Зам (5л)",
+                        srv_tours: "Экскурсии по святым местам",
+                        srv_near_haram: "Очень близко к Хараму",
+                        srv_vip: "VIP Сервис и поддержка",
+                        srv_vip_transfer: "VIP трансфер из аэропорта",
+                        srv_vip_group: "Специальная VIP группа",
+                        srv_buffet: "Питание: Шведский стол",
+                        err_name: "Введите ваше имя (минимум 2 символа)",
+                        err_phone: "Введите корректный номер телефона",
+                        err_submit: "Ошибка! Попробуйте снова.",
+                        copyright: "Все права защищены.",
+                        hotels_title: "Отели:",
+                        madinah_hotel: "Мехроб Тойба (7 ночей)",
+                        makkah_hotel: "Al Ebaa Hotel (7 ночей)"
                     },
                     en: {
                         site_title: "Safo Marva Tour - Umrah 2026",
@@ -132,7 +184,23 @@
                         success_title: "Received!", success_desc: "Our manager will contact you shortly.",
                         modal_std: "Standard Package Details", modal_com: "Comfort Package Details",
                         modal_lux: "LUX Package Details", modal_prem: "LUX Premium Details",
-                        modal_14: "14-Day Package Details"
+                        modal_14: "14-Day Package Details",
+                        srv_insurance: "Full period insurance",
+                        srv_transport_bus: "Transport: Modern buses",
+                        srv_zamzam: "Holy Zam-Zam water (5L)",
+                        srv_tours: "Tours to holy places",
+                        srv_near_haram: "Very close to Haram",
+                        srv_vip: "VIP Service and support",
+                        srv_vip_transfer: "VIP airport transfer",
+                        srv_vip_group: "Special VIP group",
+                        srv_buffet: "Meals: Buffet",
+                        err_name: "Enter your name (min 2 chars)",
+                        err_phone: "Enter a valid phone number",
+                        err_submit: "Error! Please try again.",
+                        copyright: "All rights reserved.",
+                        hotels_title: "Hotels:",
+                        madinah_hotel: "Mehrob Toiba (7 nights)",
+                        makkah_hotel: "Al Ebaa Hotel (7 nights)"
                     }
                 },
 
@@ -157,15 +225,38 @@
                 async fetchPrices() {
                     try {
                         const { data } = await supabaseClient.from('packages').select('*');
-                        if (data) data.forEach(pkg => { this.packagesData[pkg.key_name] = pkg; });
-                    } catch (e) { console.error(e); }
+                        if (data) {
+                            const newPkgData = {};
+                            data.forEach(pkg => { newPkgData[pkg.key_name] = pkg; });
+                            this.packagesData = newPkgData;
+                        }
+                    } catch (e) { console.error(e); } finally {
+                        this.pricesLoaded = true;
+                    }
+                },
+
+                // Validatsiya xabarlari
+                validationErrors: {},
+
+                validateForm() {
+                    this.validationErrors = {};
+                    const cleanName = this.bookingName.trim();
+                    const cleanPhone = this.bookingPhone.trim().replace(/[^+0-9]/g, "");
+                    
+                    if (!cleanName || cleanName.length < 2) {
+                        this.validationErrors.name = this.t('err_name');
+                    }
+                    if (!cleanPhone || cleanPhone.length < 9) {
+                        this.validationErrors.phone = this.t('err_phone');
+                    }
+                    return Object.keys(this.validationErrors).length === 0;
                 },
 
                 async submitBooking() {
                     if (document.getElementById('hp_field').value !== "") return;
+                    if (!this.validateForm()) return;
                     const cleanName = this.bookingName.trim();
                     const cleanPhone = this.bookingPhone.trim().replace(/[^+0-9]/g, "");
-                    if (!cleanName || !cleanPhone) { alert("Iltimos, ma'lumotlarni to'ldiring."); return; }
                     if(!this.isSubmitting) {
                         this.isSubmitting = true;
                         try {
@@ -175,18 +266,20 @@
                             }]);
                             if (error) throw error;
                             this.showSuccess = true;
+                            this.validationErrors = {};
                             setTimeout(() => { this.activeModal = null; this.showSuccess = false; this.bookingName = ''; this.bookingPhone = ''; }, 3000);
-                        } catch (err) { alert("Error! Please try again."); } finally { this.isSubmitting = false; }
+                        } catch (err) { 
+                            this.validationErrors.submit = this.t('err_submit');
+                        } finally { this.isSubmitting = false; }
                     }
                 }
             }
         }
     </script>
 
-    <title x-text="t('site_title')"></title>
-    <meta name="description" :content="t('site_desc')">
-    <meta name="keywords" :content="t('site_keywords')">
+
     <link rel="icon" type="image/png" href="safo_marva.png">
+    <link rel="canonical" href="https://safomarvatour.uz">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -268,7 +361,10 @@
                 <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-xl flex flex-col">
                     <span class="text-brand-red font-bold text-[10px] tracking-widest uppercase mb-2" x-text="t('10_nights')"></span>
                     <h3 class="text-lg font-bold mb-3 uppercase" x-text="t('pkg_standard')"></h3>
-                    <div class="text-2xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.standard?.price || '1150'"></span></div>
+                    <div class="text-2xl font-bold text-brand-gold mb-6" x-show="pricesLoaded">
+                        $<span x-text="packagesData.standard?.price || '1150'"></span>
+                    </div>
+                    <div class="h-8 w-24 bg-gray-100 animate-pulse rounded mb-6" x-show="!pricesLoaded"></div>
                     <div class="mt-auto space-y-2">
                         <button @click="activeModal = 'standard'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold" x-text="t('details')"></button>
                         <button @click="activeModal = 'booking'; selectedPackage = t('pkg_standard')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold" x-text="t('book_now')"></button>
@@ -279,7 +375,10 @@
                     <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-gold text-white px-3 py-1 rounded-full text-[8px] font-bold uppercase" x-text="t('popular')"></div>
                     <span class="text-brand-red font-bold text-[10px] tracking-widest uppercase mb-2" x-text="t('10_nights')"></span>
                     <h3 class="text-lg font-bold mb-3 uppercase" x-text="t('pkg_comfort')"></h3>
-                    <div class="text-2xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.comfort?.price || '1300'"></span></div>
+                    <div class="text-2xl font-bold text-brand-gold mb-6" x-show="pricesLoaded">
+                        $<span x-text="packagesData.comfort?.price || '1300'"></span>
+                    </div>
+                    <div class="h-8 w-24 bg-gray-100 animate-pulse rounded mb-6" x-show="!pricesLoaded"></div>
                     <div class="mt-auto space-y-2">
                         <button @click="activeModal = 'comfort'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold" x-text="t('details')"></button>
                         <button @click="activeModal = 'booking'; selectedPackage = t('pkg_comfort')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold" x-text="t('book_now')"></button>
@@ -289,7 +388,10 @@
                 <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-xl flex flex-col">
                     <span class="text-brand-red font-bold text-[10px] tracking-widest uppercase mb-2" x-text="t('10_nights')"></span>
                     <h3 class="text-lg font-bold mb-3 uppercase" x-text="t('pkg_lux')"></h3>
-                    <div class="text-2xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.lux?.price || '1550'"></span></div>
+                    <div class="text-2xl font-bold text-brand-gold mb-6" x-show="pricesLoaded">
+                        $<span x-text="packagesData.lux?.price || '1550'"></span>
+                    </div>
+                    <div class="h-8 w-24 bg-gray-100 animate-pulse rounded mb-6" x-show="!pricesLoaded"></div>
                     <div class="mt-auto space-y-2">
                         <button @click="activeModal = 'lux'" class="w-full bg-gray-50 text-gray-600 py-3 rounded-2xl text-xs font-bold" x-text="t('details')"></button>
                         <button @click="activeModal = 'booking'; selectedPackage = t('pkg_lux')" class="w-full bg-brand-red text-white py-3 rounded-2xl text-xs font-bold" x-text="t('book_now')"></button>
@@ -299,7 +401,10 @@
                 <div class="bg-brand-dark rounded-3xl p-6 shadow-xl flex flex-col text-white">
                     <span class="text-brand-gold font-bold text-[10px] tracking-widest uppercase mb-2" x-text="t('premium')"></span>
                     <h3 class="text-lg font-bold mb-3 uppercase" x-text="t('pkg_premium')"></h3>
-                    <div class="text-2xl font-bold text-brand-gold mb-6">$<span x-text="packagesData.lux_premium?.price || '1650'"></span></div>
+                    <div class="text-2xl font-bold text-brand-gold mb-6" x-show="pricesLoaded">
+                        $<span x-text="packagesData.lux_premium?.price || '1650'"></span>
+                    </div>
+                    <div class="h-8 w-24 bg-gray-700 animate-pulse rounded mb-6" x-show="!pricesLoaded"></div>
                     <div class="mt-auto space-y-2">
                         <button @click="activeModal = 'lux_premium'" class="w-full bg-gray-800 text-white py-3 rounded-2xl text-xs font-bold border border-gray-700" x-text="t('details')"></button>
                         <button @click="activeModal = 'booking'; selectedPackage = t('pkg_premium')" class="w-full bg-brand-gold text-brand-red py-3 rounded-2xl text-xs font-bold" x-text="t('book_now')"></button>
@@ -347,17 +452,20 @@
                         <div class="space-y-6">
                             <h4 class="text-2xl font-serif text-brand-red border-b pb-4" x-text="t('prices_title')"></h4>
                             <div class="space-y-3">
-                                <div @click="activeModal = 'booking'; selectedPackage = t('special_name'); bookingRoom = t('room_4')" class="flex justify-between items-center bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-brand-gold/10 border border-transparent hover:border-brand-gold transition-all">
+                                <div @click="activeModal = 'booking'; selectedPackage = t('special_name') + ' (' + t('room_4') + ')'; bookingRoom = t('room_4')" class="flex justify-between items-center bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-brand-gold/10 border border-transparent hover:border-brand-gold transition-all">
                                     <span class="text-gray-600 text-[10px]" x-text="t('room_4')"></span>
-                                    <span class="font-bold text-brand-gold text-sm">$<span x-text="packagesData.special_14day?.price || '1390'"></span></span>
+                                    <span class="font-bold text-brand-gold text-sm" x-show="pricesLoaded">$<span x-text="packagesData.special_14day?.price || '1390'"></span></span>
+                                    <div class="h-4 w-12 bg-gray-200 animate-pulse rounded" x-show="!pricesLoaded"></div>
                                 </div>
-                                <div @click="activeModal = 'booking'; selectedPackage = t('special_name'); bookingRoom = t('room_3')" class="flex justify-between items-center bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-brand-gold/10 border border-transparent hover:border-brand-gold transition-all">
+                                <div @click="activeModal = 'booking'; selectedPackage = t('special_name') + ' (' + t('room_3') + ')'; bookingRoom = t('room_3')" class="flex justify-between items-center bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-brand-gold/10 border border-transparent hover:border-brand-gold transition-all">
                                     <span class="text-gray-600 text-[10px]" x-text="t('room_3')"></span>
-                                    <span class="font-bold text-brand-gold text-sm">$1490</span>
+                                    <span class="font-bold text-brand-gold text-sm" x-show="pricesLoaded">$<span x-text="packagesData.special_14day_3?.price || '1490'"></span></span>
+                                    <div class="h-4 w-12 bg-gray-200 animate-pulse rounded" x-show="!pricesLoaded"></div>
                                 </div>
-                                <div @click="activeModal = 'booking'; selectedPackage = t('special_name'); bookingRoom = t('room_2')" class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border-2 border-brand-gold cursor-pointer hover:bg-brand-gold/10">
+                                <div @click="activeModal = 'booking'; selectedPackage = t('special_name') + ' (' + t('room_2') + ')'; bookingRoom = t('room_2')" class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border-2 border-brand-gold cursor-pointer hover:bg-brand-gold/10">
                                     <span class="text-gray-600 text-[10px]" x-text="t('room_2')"></span>
-                                    <span class="font-bold text-brand-gold text-sm">$1650</span>
+                                    <span class="font-bold text-brand-gold text-sm" x-show="pricesLoaded">$<span x-text="packagesData.special_14day_2?.price || '1650'"></span></span>
+                                    <div class="h-4 w-12 bg-gray-200 animate-pulse rounded" x-show="!pricesLoaded"></div>
                                 </div>
                             </div>
                         </div>
@@ -401,14 +509,20 @@
         <div class="relative overflow-hidden">
             <div class="marquee-container flex space-x-6 px-6">
                 <div class="flex space-x-6 flex-shrink-0">
-                    <img src="galereya/image.png" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
-                    <img src="galereya/image copy.png" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
-                    <img src="galereya/image copy 2.png" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image.png" alt="Umra ziyorati - Ka'ba" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy.png" alt="Umra ziyorati - Madina" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 2.png" alt="Umra ziyorati - mehmonxona" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 3.png" alt="Umra ziyorati - guruh" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 4.png" alt="Umra ziyorati - Makka" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 5.png" alt="Umra ziyorati - xizmatlar" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
                 </div>
                 <div class="flex space-x-6 flex-shrink-0">
-                    <img src="galereya/image.png" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
-                    <img src="galereya/image copy.png" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
-                    <img src="galereya/image copy 2.png" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image.png" alt="Umra ziyorati - Ka'ba" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy.png" alt="Umra ziyorati - Madina" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 2.png" alt="Umra ziyorati - mehmonxona" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 3.png" alt="Umra ziyorati - guruh" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 4.png" alt="Umra ziyorati - Makka" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
+                    <img src="galereya/image copy 5.png" alt="Umra ziyorati - xizmatlar" loading="lazy" class="h-64 w-[24rem] object-cover rounded-3xl shadow-2xl">
                 </div>
             </div>
         </div>
@@ -417,13 +531,14 @@
     <!-- Footer -->
     <footer class="bg-brand-dark text-white py-16">
         <div class="container mx-auto px-6 text-center">
-            <img src="safo_marva.png" alt="Logo" class="h-16 mx-auto mb-6 rounded-lg bg-white p-1">
+            <img src="safo_marva.png" alt="Safo Marva Tour Logo" class="h-16 mx-auto mb-6 rounded-lg bg-white p-1">
             <p class="text-gray-400 text-xs max-w-sm mx-auto mb-8" x-text="t('footer_desc')"></p>
-            <div class="flex justify-center space-x-6 mb-8 text-xs text-brand-gold">
-                <a href="tel:+998555177373">+998 55 517 73 73</a>
-                <a href="https://t.me/safomarvatour">Telegram</a>
+            <div class="flex justify-center items-center space-x-6 mb-8 text-xs text-brand-gold">
+                <a href="tel:+998555177373" aria-label="Telefon raqami">📞 +998 55 517 73 73</a>
+                <a href="https://t.me/safomarvatour" target="_blank" rel="noopener noreferrer" aria-label="Telegram kanali">✈️ Telegram</a>
+                <a href="https://www.instagram.com/safomarvatour" target="_blank" rel="noopener noreferrer" aria-label="Instagram sahifasi">📸 Instagram</a>
             </div>
-            <p class="text-[10px] text-gray-600">&copy; 2026 Safo Marva Tour. All rights reserved.</p>
+            <p class="text-[10px] text-gray-600">&copy; 2026 Safo Marva Tour. <span x-text="t('copyright')"></span></p>
         </div>
     </footer>
 
@@ -433,14 +548,25 @@
         <div @click="activeModal = null" class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="bg-white rounded-3xl w-full max-w-md relative z-10 shadow-3xl overflow-hidden" x-transition>
             <div class="bg-brand-red p-6 text-white flex justify-between"><h3 class="font-bold uppercase text-sm" x-text="t('modal_std')"></h3><button @click="activeModal = null" class="text-xl">&times;</button></div>
-            <div class="p-8 space-y-4">
-                <img src="galereya/Ramada Zad Al Tayser/5c5da9610fe3dd282a6797478642cd9e.jpg" class="rounded-xl w-full h-48 object-cover">
-                <div class="space-y-2 text-sm text-gray-600">
-                    <p><strong>Mehmonxona:</strong> Ramada Zad Al Tayser (Makka)</p>
-                    <p><strong>Muddati:</strong> 10 kecha</p>
-                    <p><strong>Xizmatlar:</strong> Tezyurar poyezd, Viza, Sug'urta, Guruh rahbari.</p>
+            <div class="p-8 space-y-6 max-h-[80vh] overflow-y-auto">
+                <div class="relative group">
+                    <img src="galereya/Ramada Zad Al Tayser/5c5da9610fe3dd282a6797478642cd9e.jpg" alt="Ramada Zad Al Tayser mehmonxonasi" loading="lazy" class="rounded-2xl w-full h-56 object-cover shadow-md transition-transform group-hover:scale-[1.02]">
+                    <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-lg text-xs font-bold border border-white/20">Ramada Zad Al Tayser (Makka)</div>
                 </div>
-                <button @click="activeModal = 'booking'; selectedPackage = t('pkg_standard')" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold shadow-lg" x-text="t('book_now')"></button>
+                
+                <div class="space-y-4">
+                    <h4 class="font-serif text-brand-red text-lg border-b pb-2" x-text="t('services_title')"></h4>
+                    <ul class="grid grid-cols-1 gap-3 text-xs text-gray-600">
+                        <li class="flex items-center"><span class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_1')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_2')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_insurance')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_5')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_transport_bus')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_zamzam')"></span></li>
+                    </ul>
+                </div>
+
+                <button @click="activeModal = 'booking'; selectedPackage = t('pkg_standard')" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold shadow-lg hover:bg-red-800 transition-all transform hover:-translate-y-1" x-text="t('book_now')"></button>
             </div>
         </div>
     </div>
@@ -449,13 +575,24 @@
         <div @click="activeModal = null" class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="bg-white rounded-3xl w-full max-w-md relative z-10 shadow-3xl overflow-hidden" x-transition>
             <div class="bg-brand-gold p-6 text-brand-red flex justify-between"><h3 class="font-bold uppercase text-sm" x-text="t('modal_com')"></h3><button @click="activeModal = null" class="text-xl">&times;</button></div>
-            <div class="p-8 space-y-4">
-                <video controls class="rounded-xl w-full h-48 object-cover shadow-lg"><source src="galereya/Al%20EBAA/IMG_6465.MP4" type="video/mp4"></video>
-                <div class="space-y-2 text-sm text-gray-600">
-                    <p><strong>Mehmonxona:</strong> AL EBAA (Makka)</p>
-                    <p><strong>Xizmatlar:</strong> 2 mahal mazali taom, ekskursiyalar, viza.</p>
+            <div class="p-8 space-y-6 max-h-[80vh] overflow-y-auto">
+                <div class="relative">
+                    <video controls preload="none" poster="galereya/Al%20EBAA/IMG_6465.MP4" class="rounded-2xl w-full h-56 object-cover shadow-lg"><source src="galereya/Al%20EBAA/IMG_6465.MP4" type="video/mp4"></video>
                 </div>
-                <button @click="activeModal = 'booking'; selectedPackage = t('pkg_comfort')" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold shadow-lg" x-text="t('book_now')"></button>
+                
+                <div class="space-y-4">
+                    <h4 class="font-serif text-brand-red text-lg border-b pb-2" x-text="t('services_title')"></h4>
+                    <ul class="grid grid-cols-1 gap-3 text-xs text-gray-600">
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gold-100 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <strong><span x-text="lang === 'ru' ? 'Отель:' : lang === 'en' ? 'Hotel:' : 'Mehmonxona:'"></span></strong> AL EBAA (Makka)</li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gold-100 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_4')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gold-100 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_1')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gold-100 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_2')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gold-100 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_5')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gold-100 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_tours')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gold-100 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_zamzam')"></span></li>
+                    </ul>
+                </div>
+                <button @click="activeModal = 'booking'; selectedPackage = t('pkg_comfort')" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold shadow-lg hover:bg-red-800 transition-all" x-text="t('book_now')"></button>
             </div>
         </div>
     </div>
@@ -464,13 +601,21 @@
         <div @click="activeModal = null" class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="bg-white rounded-3xl w-full max-w-md relative z-10 shadow-3xl overflow-hidden" x-transition>
             <div class="bg-brand-red p-6 text-white flex justify-between"><h3 class="font-bold uppercase text-sm" x-text="t('modal_lux')"></h3><button @click="activeModal = null" class="text-xl">&times;</button></div>
-            <div class="p-8 space-y-4">
-                <img src="galereya/ANJUM mehmonxonasi/7621835549ae5f328e2b2a1ba87a74e1.jpg" class="rounded-xl w-full h-48 object-cover">
-                <div class="space-y-2 text-sm text-gray-600">
-                    <p><strong>Mehmonxona:</strong> ANJUM (Makka)</p>
-                    <p><strong>Xizmatlar:</strong> Haramga juda yaqin masofa, Premium servis.</p>
+            <div class="p-8 space-y-6 max-h-[80vh] overflow-y-auto">
+                <img src="galereya/ANJUM mehmonxonasi/7621835549ae5f328e2b2a1ba87a74e1.jpg" alt="ANJUM mehmonxonasi Makka" loading="lazy" class="rounded-2xl w-full h-56 object-cover shadow-lg">
+                <div class="space-y-4">
+                    <h4 class="font-serif text-brand-red text-lg border-b pb-2" x-text="t('services_title')"></h4>
+                    <ul class="grid grid-cols-1 gap-3 text-xs text-gray-600">
+                        <li class="flex items-center"><span class="w-5 h-5 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-3 font-bold">★</span> <strong><span x-text="lang === 'ru' ? 'Премиум Отель:' : lang === 'en' ? 'Premium Hotel:' : 'Premium Mehmonxona:'"></span></strong> ANJUM (Makka)</li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-3 font-bold">★</span> <span x-text="t('srv_near_haram')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_1')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_2')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_4')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_5')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_vip')"></span></li>
+                    </ul>
                 </div>
-                <button @click="activeModal = 'booking'; selectedPackage = t('pkg_lux')" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold shadow-lg" x-text="t('book_now')"></button>
+                <button @click="activeModal = 'booking'; selectedPackage = t('pkg_lux')" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold shadow-lg hover:bg-red-800 transition-all" x-text="t('book_now')"></button>
             </div>
         </div>
     </div>
@@ -479,14 +624,21 @@
         <div @click="activeModal = null" class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="bg-brand-dark rounded-3xl w-full max-w-md relative z-10 shadow-3xl overflow-hidden border border-gray-700" x-transition>
             <div class="bg-brand-gold p-6 text-brand-red flex justify-between"><h3 class="font-bold uppercase text-sm" x-text="t('modal_prem')"></h3><button @click="activeModal = null" class="text-xl text-white">&times;</button></div>
-            <div class="p-8 space-y-4 text-white">
-                <img src="galereya/Waqf%20al%20safi/photo_2026-04-26_21-09-15.jpg" class="rounded-xl w-full h-48 object-cover">
-                <div class="space-y-2 text-sm text-gray-400">
-                    <p><strong>Madina:</strong> Bosphorus Waqf Al Safi (3 kecha)</p>
-                    <p><strong>Makka:</strong> Jumeirah Jabal Omar (4 kecha)</p>
-                    <p><strong>Xizmatlar:</strong> Tezyurar poyezd (Haramain), Premium servis.</p>
+            <div class="p-8 space-y-6 max-h-[80vh] overflow-y-auto text-white">
+                <img src="galereya/Waqf%20al%20safi/photo_2026-04-26_21-09-15.jpg" alt="Jumeirah Jabal Omar mehmonxonasi" loading="lazy" class="rounded-2xl w-full h-56 object-cover shadow-2xl border border-gray-700">
+                <div class="space-y-4">
+                    <h4 class="font-serif text-brand-gold text-lg border-b border-gray-700 pb-2" x-text="t('services_title')"></h4>
+                    <ul class="grid grid-cols-1 gap-3 text-xs text-gray-400">
+                        <li class="flex items-center text-brand-gold font-bold"><span class="w-5 h-5 bg-brand-gold text-brand-red rounded-full flex items-center justify-center mr-3 font-bold">💎</span> <strong><span x-text="lang === 'ru' ? 'Отель 5★:' : lang === 'en' ? '5★ Hotel:' : '5★ Mehmonxona:'"></span></strong> Jumeirah Jabal Omar</li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gray-800 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_vip_transfer')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gray-800 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_vip_group')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gray-800 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_1')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gray-800 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_2')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gray-800 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_3')"></span></li>
+                        <li class="flex items-center"><span class="w-5 h-5 bg-gray-800 text-brand-gold rounded-full flex items-center justify-center mr-3">✓</span> <span x-text="t('srv_buffet')"></span></li>
+                    </ul>
                 </div>
-                <button @click="activeModal = 'booking'; selectedPackage = t('pkg_premium')" class="w-full bg-brand-gold text-brand-red py-4 rounded-xl font-bold shadow-lg" x-text="t('book_now')"></button>
+                <button @click="activeModal = 'booking'; selectedPackage = t('pkg_premium')" class="w-full bg-brand-gold text-brand-red py-4 rounded-xl font-bold shadow-lg hover:bg-yellow-600 transition-all" x-text="t('book_now')"></button>
             </div>
         </div>
     </div>
@@ -495,18 +647,32 @@
         <div @click="activeModal = null" class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="bg-white rounded-3xl w-full max-w-2xl relative z-10 shadow-3xl overflow-hidden" x-transition>
             <div class="bg-brand-red p-6 text-white flex justify-between"><h3 class="font-bold uppercase text-sm" x-text="t('modal_14')"></h3><button @click="activeModal = null" class="text-xl">&times;</button></div>
-            <div class="p-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <video controls class="rounded-xl w-full h-44 object-cover shadow-lg"><source src="galereya/Al%20EBAA/IMG_6465.MP4" type="video/mp4"></video>
-                    <div class="space-y-2 text-xs text-gray-600">
-                        <p><strong>🗓 Sanalar:</strong> 22.06 - 06.07 / 25.06 - 09.07</p>
-                        <p><strong>🕌 Madina:</strong> Mehrob Toiba (7 kecha)</p>
-                        <p><strong>🕋 Makka:</strong> Al Ebaa Hotel (7 kecha)</p>
-                        <p><strong>🎁 Hadialar:</strong> Zam-zam (5L), Nimcha, Sumka, Beyjik, Abaya.</p>
-                        <p><strong>🌊 Qo'shimcha:</strong> Qizil dengiz sayohati va ekskursiyalar.</p>
+            <div class="p-8 space-y-6 max-h-[85vh] overflow-y-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    <div class="space-y-4">
+                        <video controls preload="none" class="rounded-2xl w-full aspect-video object-cover shadow-lg border border-gray-100"><source src="galereya/Al%20EBAA/IMG_6465.MP4" type="video/mp4"></video>
+                        <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                             <h5 class="font-bold text-xs text-brand-red mb-3 flex items-center"><span class="mr-2">🏨</span> <span x-text="t('hotels_title')"></span></h5>
+                             <div class="space-y-2 text-[11px] text-gray-600">
+                                <p>📍 <strong>Madina:</strong> <span x-text="t('madinah_hotel')"></span></p>
+                                <p>📍 <strong>Makka:</strong> <span x-text="t('makkah_hotel')"></span></p>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="font-serif text-brand-red text-lg border-b pb-2" x-text="t('services_title')"></h4>
+                        <ul class="grid grid-cols-1 gap-2 text-[11px] text-gray-600">
+                            <li class="flex items-center"><span class="w-4 h-4 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-2 text-[10px]">✓</span> <span x-text="t('srv_1')"></span></li>
+                            <li class="flex items-center"><span class="w-4 h-4 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-2 text-[10px]">✓</span> <span x-text="t('srv_2')"></span></li>
+                            <li class="flex items-center"><span class="w-4 h-4 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-2 text-[10px]">✓</span> <span x-text="t('srv_3')"></span></li>
+                            <li class="flex items-center"><span class="w-4 h-4 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-2 text-[10px]">✓</span> <span x-text="t('srv_4')"></span></li>
+                            <li class="flex items-center"><span class="w-4 h-4 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-2 text-[10px]">✓</span> <span x-text="t('srv_5')"></span></li>
+                            <li class="flex items-center"><span class="w-4 h-4 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-2 text-[10px]">✓</span> <span x-text="t('srv_tours')"></span></li>
+                            <li class="flex items-center"><span class="w-4 h-4 bg-red-100 text-brand-red rounded-full flex items-center justify-center mr-2 text-[10px]">✓</span> <span x-text="t('srv_zamzam')"></span></li>
+                        </ul>
                     </div>
                 </div>
-                <button @click="activeModal = 'booking'; selectedPackage = t('special_name')" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold shadow-lg" x-text="t('book_now')"></button>
+                <button @click="activeModal = 'booking'; selectedPackage = t('special_name')" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold shadow-lg hover:scale-[1.01] transition-all" x-text="t('book_now')"></button>
             </div>
         </div>
     </div>
@@ -518,13 +684,20 @@
             <h3 class="text-2xl font-serif text-brand-red mb-2" x-text="t('book_title')"></h3>
             <p class="text-xs text-gray-400 mb-6" x-text="t('book_subtitle')"></p>
             <div class="space-y-4">
-                <input type="text" x-model="bookingName" :placeholder="t('placeholder_name')" class="w-full bg-gray-50 border-0 p-4 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-gold">
-                <input type="tel" x-model="bookingPhone" :placeholder="t('placeholder_phone')" class="w-full bg-gray-50 border-0 p-4 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-gold">
+                <div>
+                    <input type="text" x-model="bookingName" :placeholder="t('placeholder_name')" :class="validationErrors.name ? 'ring-2 ring-red-400' : ''" class="w-full bg-gray-50 border-0 p-4 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-gold" aria-label="Name input">
+                    <p x-show="validationErrors.name" x-text="validationErrors.name" class="text-red-500 text-[11px] mt-1 ml-2" x-transition></p>
+                </div>
+                <div>
+                    <input type="tel" x-model="bookingPhone" :placeholder="t('placeholder_phone')" :class="validationErrors.phone ? 'ring-2 ring-red-400' : ''" class="w-full bg-gray-50 border-0 p-4 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-gold" aria-label="Phone input">
+                    <p x-show="validationErrors.phone" x-text="validationErrors.phone" class="text-red-500 text-[11px] mt-1 ml-2" x-transition></p>
+                </div>
                 <div class="bg-brand-red/5 p-4 rounded-xl text-xs text-brand-red font-bold flex justify-between">
                     <span x-text="t('selected')"></span><span x-text="selectedPackage"></span>
                 </div>
-                <input type="text" id="hp_field" class="hidden" value="">
-                <button @click="submitBooking()" :disabled="isSubmitting" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold text-sm shadow-xl flex justify-center hover:bg-red-800 transition-all">
+                <input type="text" id="hp_field" class="hidden" value="" tabindex="-1" autocomplete="off">
+                <p x-show="validationErrors.submit" x-text="validationErrors.submit" class="text-red-500 text-xs text-center" x-transition></p>
+                <button @click="submitBooking()" :disabled="isSubmitting" class="w-full bg-brand-red text-white py-4 rounded-xl font-bold text-sm shadow-xl flex justify-center hover:bg-red-800 transition-all focus:outline-none focus:ring-2 focus:ring-brand-gold" aria-label="Submit booking">
                     <span x-show="!isSubmitting" x-text="t('submit')"></span>
                     <span x-show="isSubmitting" class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
                 </button>

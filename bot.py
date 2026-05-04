@@ -1,13 +1,16 @@
 import logging
 import asyncio
 import os
-from aiogram import Bot, Dispatcher, types
+import datetime
+from datetime import timedelta, timezone
+
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram import F
 from supabase import create_client, Client
 from dotenv import load_dotenv
+from aiohttp import web
 
 load_dotenv()
 
@@ -17,8 +20,11 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPER_MANAGER_ID = int(os.getenv("MANAGER_ADMIN_ID", 0))
 
+# O'zbekiston vaqt zonasi (UTC+5)
+UZB_TZ = timezone(timedelta(hours=5))
+
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
@@ -29,9 +35,12 @@ class AdminState(StatesGroup):
 
 # --- ADMINLARNI TEKSHIRISH ---
 async def get_admin_role(user_id):
-    res = supabase.table("admins").select("role").eq("id", user_id).execute()
-    if res.data:
-        return res.data[0]['role']
+    try:
+        res = supabase.table("admins").select("role").eq("id", user_id).execute()
+        if res.data:
+            return res.data[0]['role']
+    except Exception as e:
+        logging.error(f"Admin role tekshirishda xatolik: {e}")
     if user_id == SUPER_MANAGER_ID:
         return "super_manager"
     return None
@@ -125,9 +134,6 @@ async def update_price(message: types.Message, state: FSMContext):
     await message.answer("✅ Saytda narx o'zgardi.")
     await state.clear()
 
-import datetime
-from datetime import timedelta
-
 # --- STATUS TUGMALARI ---
 def get_status_kb(lead_id):
     kb = [
@@ -152,7 +158,7 @@ async def process_status(callback: types.CallbackQuery):
 
 # --- HAFTALIK HISOBOT ---
 async def send_weekly_report():
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(UZB_TZ)
     week_ago = (now - timedelta(days=7)).isoformat()
     
     res = supabase.table("leads").select("*").gte("created_at", week_ago).execute()
@@ -163,10 +169,10 @@ async def send_weekly_report():
         return
     
     total = len(leads)
-    done = len([l for l in leads if l['status'] == 'done'])
-    wait = len([l for l in leads if l['status'] == 'wait'])
-    cancel = len([l for l in leads if l['status'] == 'cancel'])
-    yangi = len([l for l in leads if l['status'] == 'yangi'])
+    done = len([l for l in leads if l.get('status') == 'done'])
+    wait = len([l for l in leads if l.get('status') == 'wait'])
+    cancel = len([l for l in leads if l.get('status') == 'cancel'])
+    yangi = len([l for l in leads if l.get('status') in ('yangi', None, '')])
     
     # Manbalar (Instagram, Telegram va h.k.)
     sources = {}
@@ -190,18 +196,21 @@ async def send_weekly_report():
 
 async def scheduler():
     while True:
-        now = datetime.datetime.now()
-        # Shanba (5) soat 16:00
+        now = datetime.datetime.now(UZB_TZ)
+        # Shanba (5) soat 16:00 O'zbekiston vaqti
         if now.weekday() == 5 and now.hour == 16 and now.minute == 0:
             await send_weekly_report()
-            await asyncio.sleep(60) # Ikki marta yubormasligi uchun
+            await asyncio.sleep(60)  # Ikki marta yubormasligi uchun
         await asyncio.sleep(30)
 
 # --- LEADLARNI TEKSHIRISH ---
 async def check_leads():
     last_id = 0
-    res = supabase.table("leads").select("id").order("id", desc=True).limit(1).execute()
-    if res.data: last_id = res.data[0]['id']
+    try:
+        res = supabase.table("leads").select("id").order("id", desc=True).limit(1).execute()
+        if res.data: last_id = res.data[0]['id']
+    except Exception as e:
+        logging.error(f"Boshlang'ich lead ID olishda xatolik: {e}")
     
     while True:
         try:
@@ -216,7 +225,10 @@ async def check_leads():
                         admin_index = lead['id'] % num_admins
                         target_admin_id = lead_admins[admin_index]['id']
                         
-                        time_str = datetime.datetime.fromisoformat(lead['created_at'].replace('Z', '+00:00')).strftime('%H:%M, %d.%m.%Y')
+                        try:
+                            time_str = datetime.datetime.fromisoformat(lead['created_at'].replace('Z', '+00:00')).astimezone(UZB_TZ).strftime('%H:%M, %d.%m.%Y')
+                        except Exception:
+                            time_str = lead.get('created_at', 'Noma\'lum')
                         
                         text = (f"🎯 **SIZGA MIJOZ BIRIKTIRILDI**\n\n"
                                 f"📦 Paket: {lead['package']}\n"
@@ -228,21 +240,36 @@ async def check_leads():
                         
                         try:
                             await bot.send_message(chat_id=target_admin_id, text=text, reply_markup=get_status_kb(lead['id']))
-                        except: pass
+                            logging.info(f"Lead #{lead['id']} -> Admin {target_admin_id} ga yuborildi")
+                        except Exception as e:
+                            logging.error(f"Lead #{lead['id']} yuborishda xatolik (Admin: {target_admin_id}): {e}")
+                        
                         last_id = max(last_id, lead['id'])
-        except Exception as e: logging.error(e)
+                else:
+                    logging.warning("Lead adminlar topilmadi! Supabase 'admins' jadvalini tekshiring.")
+        except Exception as e:
+            logging.error(f"Lead tekshirishda xatolik: {e}")
         await asyncio.sleep(10)
-
-from aiohttp import web
-import os
 
 # --- KEEP ALIVE WEB SERVER (For Render) ---
 async def handle(request):
-    return web.Response(text="Bot is running!")
+    """Health check endpoint — Supabase ulanishini ham tekshiradi"""
+    try:
+        res = supabase.table("packages").select("key_name").limit(1).execute()
+        db_status = "connected" if res.data is not None else "no data"
+    except Exception as e:
+        db_status = f"error: {str(e)}"
+    
+    return web.json_response({
+        "status": "running",
+        "database": db_status,
+        "timestamp": datetime.datetime.now(UZB_TZ).isoformat()
+    })
 
 async def start_web_server():
     app = web.Application()
     app.router.add_get("/", handle)
+    app.router.add_get("/health", handle)
     runner = web.AppRunner(app)
     await runner.setup()
     port = int(os.getenv("PORT", 8080))
@@ -259,5 +286,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-

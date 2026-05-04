@@ -1,5 +1,4 @@
-aiogram
-supabase
-python-dotenv
-aiohttp
-datetime
+aiogram==3.7.0
+supabase==2.7.2
+python-dotenv==1.0.1
+aiohttp==3.9.5

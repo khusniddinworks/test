@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /galereya/Al EBAA/
+Disallow: /galereya/ANJUM mehmonxonasi/
+Disallow: /galereya/Mehrob Toiba/
+Disallow: /galereya/Ramada Zad Al Tayser/
+Disallow: /galereya/Waqf al safi/
+
+Sitemap: https://safomarvatour.uz/sitemap.xml
