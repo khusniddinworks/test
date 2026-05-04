@@ -4,7 +4,6 @@ __pycache__/
 *.pyc
 .vscode/
 node_modules/
-index_backup_current.html
 dist/
 .DS_Store
 *.log
