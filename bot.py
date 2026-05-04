@@ -20,6 +20,13 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPER_MANAGER_ID = int(os.getenv("MANAGER_ADMIN_ID", 0))
 
+# Tekshirish
+if not all([BOT_TOKEN, SUPABASE_URL, SUPABASE_KEY]):
+    logging.error("❌ XATOLIK: BOT_TOKEN, SUPABASE_URL yoki SUPABASE_KEY topilmadi!")
+    logging.error(f"BOT_TOKEN: {'OK' if BOT_TOKEN else 'MISSING'}")
+    logging.error(f"SUPABASE_URL: {'OK' if SUPABASE_URL else 'MISSING'}")
+    logging.error(f"SUPABASE_KEY: {'OK' if SUPABASE_KEY else 'MISSING'}")
+
 # O'zbekiston vaqt zonasi (UTC+5)
 UZB_TZ = timezone(timedelta(hours=5))
 
