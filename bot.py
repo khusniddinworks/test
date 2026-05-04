@@ -11,6 +11,7 @@ from aiogram.fsm.state import State, StatesGroup
 from supabase import create_client, Client
 from dotenv import load_dotenv
 from aiohttp import web
+import aiohttp
 
 load_dotenv()
 
@@ -229,6 +230,23 @@ async def check_leads():
         except: pass
         await asyncio.sleep(15)
 
+# --- KEEP ALIVE (Render uchun) ---
+async def keep_alive():
+    url = os.getenv("RENDER_EXTERNAL_URL")
+    if not url:
+        logging.warning("⚠️ RENDER_EXTERNAL_URL topilmadi. Self-ping ishlamaydi.")
+        return
+    
+    await asyncio.sleep(30) # Server to'liq yonishi uchun kutamiz
+    async with aiohttp.ClientSession() as session:
+        while True:
+            try:
+                async with session.get(url) as resp:
+                    logging.info(f"📡 Self-ping muvaffaqiyatli: {resp.status}")
+            except Exception as e:
+                logging.error(f"❌ Self-ping xatolik: {e}")
+            await asyncio.sleep(600) # Har 10 daqiqada
+
 # --- WEB SERVER ---
 async def handle(request):
     return web.json_response({"status": "ok", "bot": "running"})
@@ -266,6 +284,7 @@ async def main():
     # 3. Fon vazifalarini boshlash
     asyncio.create_task(check_leads())
     asyncio.create_task(scheduler())
+    asyncio.create_task(keep_alive())
     
     # 4. Polling boshlash
     await dp.start_polling(bot)
