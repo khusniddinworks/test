@@ -15,23 +15,38 @@ from aiohttp import web
 load_dotenv()
 
 # --- SOZLAMALAR ---
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPER_MANAGER_ID = int(os.getenv("MANAGER_ADMIN_ID", 0))
 
-# Tekshirish
+# Tekshirish (Loglarda aniq ko'rinishi uchun print ishlatamiz)
+print("--- ENV CHECK START ---")
+if BOT_TOKEN:
+    print(f"BOT_TOKEN: OK (len={len(BOT_TOKEN)})")
+else:
+    print("BOT_TOKEN: MISSING")
+
+if SUPABASE_URL:
+    print(f"SUPABASE_URL: OK")
+else:
+    print("SUPABASE_URL: MISSING")
+
+if SUPABASE_KEY:
+    print(f"SUPABASE_KEY: OK (len={len(SUPABASE_KEY)})")
+else:
+    print("SUPABASE_KEY: MISSING")
+print("--- ENV CHECK END ---")
+
 if not all([BOT_TOKEN, SUPABASE_URL, SUPABASE_KEY]):
-    logging.error("❌ XATOLIK: BOT_TOKEN, SUPABASE_URL yoki SUPABASE_KEY topilmadi!")
-    logging.error(f"BOT_TOKEN: {'OK' if BOT_TOKEN else 'MISSING'}")
-    logging.error(f"SUPABASE_URL: {'OK' if SUPABASE_URL else 'MISSING'}")
-    logging.error(f"SUPABASE_KEY: {'OK' if SUPABASE_KEY else 'MISSING'}")
+    logging.error("❌ XATOLIK: Kerakli o'zgaruvchilar topilmadi!")
 
 # O'zbekiston vaqt zonasi (UTC+5)
 UZB_TZ = timezone(timedelta(hours=5))
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
